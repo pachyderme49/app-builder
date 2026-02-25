@@ -10,30 +10,16 @@
     </header>
 
     <section
-      class="rounded-2xl border border-dashed border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-6"
-    >
-      <form
-        class="flex flex-col gap-3 sm:flex-row sm:items-end"
-        (ngSubmit)="addProject()"
-      >
+      class="rounded-2xl border border-dashed border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-6">
+      <form class="flex flex-col gap-3 sm:flex-row sm:items-end" (ngSubmit)="addProject()">
         <label class="flex-1 text-sm font-medium text-slate-700">
           Project name
-          <input
-            type="text"
-            name="projectName"
-            [(ngModel)]="newProjectName"
-            placeholder="Enter a project name"
-            pInputText
-            class="mt-1 w-full"
-          />
+          <input type="text" name="projectName" [(ngModel)]="newProjectName" placeholder="Enter a project name"
+            pInputText class="mt-1 w-full" />
         </label>
 
         <div class="sm:pb-0.5">
-          <p-button
-            type="submit"
-            label="Add project"
-            [disabled]="!newProjectName.trim()"
-          ></p-button>
+          <p-button type="submit" label="Add project" [disabled]="!newProjectName.trim()"></p-button>
         </div>
       </form>
     </section>
@@ -47,53 +33,27 @@
           {{ projects.length }} {{ projects.length === 1 ? 'project' : 'projects' }}
         </span>
       </div>
-
-      <div
-        *ngIf="hasProjects; else emptyState"
-        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        <p-card
-          *ngFor="let project of projects; trackBy: trackById"
-          class="cursor-pointer transition-shadow hover:shadow-md"
-          (click)="openProject(project.id)"
-        >
-          <ng-template pTemplate="title">
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0">
-                <div class="truncate text-sm font-semibold text-surface-900">
-                  {{ project.name }}
-                </div>
-                <div class="mt-1 text-xs text-muted-color">
-                  Created {{ project.createdAt | date: 'mediumDate' }}
-                </div>
-              </div>
-              <p-button
-                type="button"
-                (onClick)="onDelete(project.id, $event)"
-                variant="text"
-                size="small"
-                severity="danger"
-                aria-label="Delete project"
-                (click)="$event.stopPropagation()"
-              >
-                ✕
-              </p-button>
-            </div>
-          </ng-template>
+      @if(hasProjects){
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for(project of projects; track project.id){
+        <p-card class="cursor-pointer transition-shadow hover:shadow-md" (click)="openProject(project.id)">
+          <ng-template #title> {{ project.name }} </ng-template>
         </p-card>
+        } @empty {
+        <p>No projects found.</p>
+        }
       </div>
-
-      <ng-template #emptyState>
-        <div
-          class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 px-6 py-10 text-center text-sm text-slate-500"
-        >
-          <p class="font-medium text-slate-600">No projects yet</p>
-          <p class="max-w-sm text-xs text-slate-400">
-            Start by creating your first project using the form above. Your projects are stored
-            locally in this browser.
-          </p>
-        </div>
-      </ng-template>
+      }
+      @else {
+      <div
+        class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 px-6 py-10 text-center text-sm text-slate-500">
+        <p class="font-medium text-slate-600">No projects yet</p>
+        <p class="max-w-sm text-xs text-slate-400">
+          Start by creating your first project using the form above. Your projects are stored
+          locally in this browser.
+        </p>
+      </div>
+      }
     </section>
   </div>
 </div>

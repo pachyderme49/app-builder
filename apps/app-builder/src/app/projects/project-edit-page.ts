@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,15 +24,13 @@ type ProjectTab = 'pages' | 'components' | 'data' | 'configuration';
   styleUrl: './project-edit-page.css',
 })
 export class ProjectEditPage implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   project: Project | null = null;
   isEditingName = false;
   editedName = '';
   activeTab: ProjectTab = 'pages';
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-  ) {}
 
   get hasProject(): boolean {
     return !!this.project;

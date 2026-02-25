@@ -1,4 +1,5 @@
-<div class="min-h-screen bg-slate-50 text-slate-900" *ngIf="hasProject; else missingProject">
+@if(hasProject){
+<div class="min-h-screen bg-slate-50 text-slate-900">
   <div class="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
     <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
       <div class="space-y-1">
@@ -13,17 +14,18 @@
 
           <div>
             <div class="flex items-center gap-2">
-              <div *ngIf="!isEditingName; else nameEdit">
-                <button
-                  type="button"
-                  class="rounded-lg px-0.5 text-left text-2xl font-semibold tracking-tight text-slate-900 hover:bg-slate-100"
-                  (click)="startEditName()"
-                >
-                  {{ projectName }}
-                </button>
-              </div>
-
-              <ng-template #nameEdit>
+              @if(!isEditingName){
+                <div>
+                  <button
+                    type="button"
+                    class="rounded-lg px-0.5 text-left text-2xl font-semibold tracking-tight text-slate-900 hover:bg-slate-100"
+                    (click)="startEditName()"
+                  >
+                    {{ projectName }}
+                  </button>
+                </div>
+              }
+              @else {
                 <form (ngSubmit)="commitEditName()" class="flex items-center gap-2">
                   <input
                     type="text"
@@ -46,7 +48,7 @@
                     (onClick)="cancelEditName()"
                   ></p-button>
                 </form>
-              </ng-template>
+              }
             </div>
 
             <p class="text-xs text-slate-400">
@@ -78,34 +80,31 @@
     </section>
 
     <section class="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
-      <div *ngIf="activeTab === 'pages'">
+      @if(activeTab === 'pages'){
         <p class="text-sm text-muted-color">
           Pages configuration for this project will appear here.
         </p>
-      </div>
-
-      <div *ngIf="activeTab === 'components'">
+      }
+      @else if(activeTab === 'components'){
         <p class="text-sm text-muted-color">
           Components for this project will appear here.
         </p>
-      </div>
-
-      <div *ngIf="activeTab === 'data'">
+      }
+      @else if(activeTab === 'data'){
         <p class="text-sm text-muted-color">
           Data schema and sample data for this project will appear here.
         </p>
-      </div>
-
-      <div *ngIf="activeTab === 'configuration'">
+      }
+      @else if(activeTab === 'configuration'){
         <p class="text-sm text-muted-color">
           Global configuration for this project will appear here.
         </p>
-      </div>
+      }
     </section>
   </div>
 </div>
-
-<ng-template #missingProject>
+}
+@else {
   <div class="min-h-screen bg-slate-50 text-slate-900">
     <div
       class="mx-auto flex max-w-xl flex-col items-center justify-center gap-4 px-4 py-16 text-center"
@@ -121,4 +120,4 @@
       ></p-button>
     </div>
   </div>
-</ng-template>
+}

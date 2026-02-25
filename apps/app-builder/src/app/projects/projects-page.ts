@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,10 +22,9 @@ const STORAGE_KEY = 'app-builder:projects';
   styleUrl: './projects-page.css',
 })
 export class ProjectsPage implements OnInit {
+  private readonly router = inject(Router);
   projects: Project[] = [];
   newProjectName = '';
-
-  constructor(private readonly router: Router) {}
 
   ngOnInit(): void {
     this.loadProjects();
@@ -69,10 +68,6 @@ export class ProjectsPage implements OnInit {
 
   private navigateToProject(id: string): void {
     this.router.navigate(['/projects', id]);
-  }
-
-  trackById(_index: number, project: Project): string {
-    return project.id;
   }
 
   private loadProjects(): void {
