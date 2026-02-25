@@ -1,0 +1,92 @@
+<div class="min-h-screen bg-slate-50 text-slate-900">
+  <div class="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+    <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div>
+        <h1 class="text-3xl font-semibold tracking-tight text-slate-900">Projects</h1>
+        <p class="mt-1 text-sm text-slate-500">
+          Create and manage your projects locally in this browser.
+        </p>
+      </div>
+    </header>
+
+    <section
+      class="rounded-2xl border border-dashed border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-6"
+    >
+      <form
+        class="flex flex-col gap-3 sm:flex-row sm:items-center"
+        (ngSubmit)="addProject()"
+      >
+        <label class="flex-1 text-sm font-medium text-slate-700">
+          Project name
+          <input
+            type="text"
+            name="projectName"
+            [(ngModel)]="newProjectName"
+            placeholder="Enter a project name"
+            class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+          />
+        </label>
+
+        <button
+          type="submit"
+          class="mt-1 inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 disabled:cursor-not-allowed disabled:bg-slate-300"
+          [disabled]="!newProjectName.trim()"
+        >
+          Add project
+        </button>
+      </form>
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Your projects
+        </h2>
+        <span class="text-xs text-slate-400">
+          {{ projects.length }} {{ projects.length === 1 ? 'project' : 'projects' }}
+        </span>
+      </div>
+
+      <div
+        *ngIf="hasProjects; else emptyState"
+        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <ui-card *ngFor="let project of projects; trackBy: trackById">
+          <div class="flex flex-col gap-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="truncate text-sm font-semibold text-slate-900">
+                  {{ project.name }}
+                </h3>
+                <p class="mt-1 text-xs text-slate-400">
+                  Created
+                  {{ project.createdAt | date: 'mediumDate' }}
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="removeProject(project.id)"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-xs font-medium text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+                aria-label="Delete project"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </ui-card>
+      </div>
+
+      <ng-template #emptyState>
+        <div
+          class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 px-6 py-10 text-center text-sm text-slate-500"
+        >
+          <p class="font-medium text-slate-600">No projects yet</p>
+          <p class="max-w-sm text-xs text-slate-400">
+            Start by creating your first project using the form above. Your projects are stored
+            locally in this browser.
+          </p>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>
