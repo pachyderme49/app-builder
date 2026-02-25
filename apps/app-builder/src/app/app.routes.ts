@@ -12,6 +12,11 @@ export const appRoutes: Route[] = [
       import('./projects/projects-page').then((m) => m.ProjectsPage),
   },
   {
+    path: 'projects/:id',
+    loadComponent: () =>
+      import('./projects/project-edit-page').then((m) => m.ProjectEditPage),
+  },
+  {
     path: '**',
     redirectTo: 'projects',
   },

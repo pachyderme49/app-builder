@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UiCard } from '@app-builder/shared-ui';
 
 interface Project {
@@ -21,6 +22,8 @@ const STORAGE_KEY = 'app-builder:projects';
 export class ProjectsPage implements OnInit {
   projects: Project[] = [];
   newProjectName = '';
+
+  constructor(private readonly router: Router) {}
 
   ngOnInit(): void {
     this.loadProjects();
@@ -45,11 +48,25 @@ export class ProjectsPage implements OnInit {
     this.projects = [...this.projects, project];
     this.newProjectName = '';
     this.saveProjects();
+    this.navigateToProject(project.id);
   }
 
   removeProject(id: string): void {
     this.projects = this.projects.filter((project) => project.id !== id);
     this.saveProjects();
+  }
+
+  onDelete(id: string, event: MouseEvent): void {
+    event.stopPropagation();
+    this.removeProject(id);
+  }
+
+  openProject(id: string): void {
+    this.navigateToProject(id);
+  }
+
+  private navigateToProject(id: string): void {
+    this.router.navigate(['/projects', id]);
   }
 
   trackById(_index: number, project: Project): string {

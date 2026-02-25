@@ -1,0 +1,161 @@
+<div class="min-h-screen bg-slate-50 text-slate-900" *ngIf="hasProject; else missingProject">
+  <div class="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
+    <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div class="space-y-1">
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            (click)="goBackToProjects()"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-xs text-slate-500 shadow-sm transition hover:border-slate-300 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+            aria-label="Back to projects"
+          >
+            ←
+          </button>
+
+          <div>
+            <div class="flex items-center gap-2">
+              <div *ngIf="!isEditingName; else nameEdit">
+                <button
+                  type="button"
+                  class="rounded-lg px-0.5 text-left text-2xl font-semibold tracking-tight text-slate-900 hover:bg-slate-100"
+                  (click)="startEditName()"
+                >
+                  {{ projectName }}
+                </button>
+              </div>
+
+              <ng-template #nameEdit>
+                <form (ngSubmit)="commitEditName()" class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    [(ngModel)]="editedName"
+                    name="projectName"
+                    class="min-w-[10rem] rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xl font-semibold text-slate-900 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                  />
+                  <button
+                    type="submit"
+                    class="inline-flex items-center justify-center rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    (click)="cancelEditName()"
+                    class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200"
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </ng-template>
+            </div>
+
+            <p class="text-xs text-slate-400">
+              Click the name to rename this project.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 self-end">
+        <div class="relative">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+            (click)="deleteProject()"
+          >
+            <span class="mr-1 text-lg leading-none text-slate-400">•••</span>
+            Delete project
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="border-b border-slate-200">
+      <nav class="-mb-px flex flex-wrap gap-2 text-sm font-medium text-slate-500">
+        <button
+          type="button"
+          (click)="selectTab('pages')"
+          [class.text-slate-900]="activeTab === 'pages'"
+          [class.border-slate-900]="activeTab === 'pages'"
+          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
+        >
+          Pages
+        </button>
+        <button
+          type="button"
+          (click)="selectTab('components')"
+          [class.text-slate-900]="activeTab === 'components'"
+          [class.border-slate-900]="activeTab === 'components'"
+          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
+        >
+          Components
+        </button>
+        <button
+          type="button"
+          (click)="selectTab('data')"
+          [class.text-slate-900]="activeTab === 'data'"
+          [class.border-slate-900]="activeTab === 'data'"
+          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
+        >
+          Data
+        </button>
+        <button
+          type="button"
+          (click)="selectTab('configuration')"
+          [class.text-slate-900]="activeTab === 'configuration'"
+          [class.border-slate-900]="activeTab === 'configuration'"
+          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
+        >
+          Configuration
+        </button>
+      </nav>
+    </section>
+
+    <section class="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
+      <div *ngIf="activeTab === 'pages'">
+        <p class="text-sm text-slate-500">
+          Pages configuration for this project will appear here.
+        </p>
+      </div>
+
+      <div *ngIf="activeTab === 'components'">
+        <p class="text-sm text-slate-500">
+          Components for this project will appear here.
+        </p>
+      </div>
+
+      <div *ngIf="activeTab === 'data'">
+        <p class="text-sm text-slate-500">
+          Data schema and sample data for this project will appear here.
+        </p>
+      </div>
+
+      <div *ngIf="activeTab === 'configuration'">
+        <p class="text-sm text-slate-500">
+          Global configuration for this project will appear here.
+        </p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<ng-template #missingProject>
+  <div class="min-h-screen bg-slate-50 text-slate-900">
+    <div
+      class="mx-auto flex max-w-xl flex-col items-center justify-center gap-4 px-4 py-16 text-center"
+    >
+      <p class="text-sm font-medium text-slate-500">Project not found</p>
+      <p class="text-xs text-slate-400">
+        The project you are trying to edit no longer exists. It may have been removed from this
+        browser.
+      </p>
+      <button
+        type="button"
+        (click)="goBackToProjects()"
+        class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50"
+      >
+        Back to projects
+      </button>
+    </div>
+  </div>
+</ng-template>
