@@ -3,14 +3,13 @@
     <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
       <div class="space-y-1">
         <div class="flex items-center gap-3">
-          <button
-            type="button"
-            (click)="goBackToProjects()"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-xs text-slate-500 shadow-sm transition hover:border-slate-300 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+          <p-button
+            icon="pi pi-arrow-left"
+            (onClick)="goBackToProjects()"
+            variant="text"
+            size="small"
             aria-label="Back to projects"
-          >
-            ←
-          </button>
+          ></p-button>
 
           <div>
             <div class="flex items-center gap-2">
@@ -30,21 +29,22 @@
                     type="text"
                     [(ngModel)]="editedName"
                     name="projectName"
-                    class="min-w-[10rem] rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xl font-semibold text-slate-900 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                    pInputText
+                    class="min-w-[10rem]"
                   />
-                  <button
+                  <p-button
                     type="submit"
-                    class="inline-flex items-center justify-center rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50"
-                  >
-                    Save
-                  </button>
-                  <button
+                    label="Save"
+                    size="small"
+                    class="mr-1"
+                  ></p-button>
+                  <p-button
                     type="button"
-                    (click)="cancelEditName()"
-                    class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200"
-                  >
-                    Cancel
-                  </button>
+                    label="Cancel"
+                    size="small"
+                    variant="outlined"
+                    (onClick)="cancelEditName()"
+                  ></p-button>
                 </form>
               </ng-template>
             </div>
@@ -57,81 +57,47 @@
       </div>
 
       <div class="flex items-center gap-2 self-end">
-        <div class="relative">
-          <button
-            type="button"
-            class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
-            (click)="deleteProject()"
-          >
-            <span class="mr-1 text-lg leading-none text-slate-400">•••</span>
-            Delete project
-          </button>
-        </div>
+        <p-button
+          label="⋯"
+          variant="text"
+          aria-label="Project menu"
+          (onClick)="deleteProject()"
+        ></p-button>
       </div>
     </header>
 
     <section class="border-b border-slate-200">
-      <nav class="-mb-px flex flex-wrap gap-2 text-sm font-medium text-slate-500">
-        <button
-          type="button"
-          (click)="selectTab('pages')"
-          [class.text-slate-900]="activeTab === 'pages'"
-          [class.border-slate-900]="activeTab === 'pages'"
-          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
-        >
-          Pages
-        </button>
-        <button
-          type="button"
-          (click)="selectTab('components')"
-          [class.text-slate-900]="activeTab === 'components'"
-          [class.border-slate-900]="activeTab === 'components'"
-          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
-        >
-          Components
-        </button>
-        <button
-          type="button"
-          (click)="selectTab('data')"
-          [class.text-slate-900]="activeTab === 'data'"
-          [class.border-slate-900]="activeTab === 'data'"
-          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
-        >
-          Data
-        </button>
-        <button
-          type="button"
-          (click)="selectTab('configuration')"
-          [class.text-slate-900]="activeTab === 'configuration'"
-          [class.border-slate-900]="activeTab === 'configuration'"
-          class="border-b-2 border-transparent px-3 pb-2 pt-1 transition hover:text-slate-900"
-        >
-          Configuration
-        </button>
-      </nav>
+      <p-tabs [(value)]="activeTab">
+        <p-tablist>
+          <p-tab value="pages">Pages</p-tab>
+          <p-tab value="components">Components</p-tab>
+          <p-tab value="data">Data</p-tab>
+          <p-tab value="configuration">Configuration</p-tab>
+        </p-tablist>
+      </p-tabs>
     </section>
 
     <section class="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
       <div *ngIf="activeTab === 'pages'">
-        <p class="text-sm text-slate-500">
+        <p class="text-sm text-muted-color">
           Pages configuration for this project will appear here.
         </p>
       </div>
 
       <div *ngIf="activeTab === 'components'">
-        <p class="text-sm text-slate-500">
+        <p class="text-sm text-muted-color">
           Components for this project will appear here.
         </p>
       </div>
 
       <div *ngIf="activeTab === 'data'">
-        <p class="text-sm text-slate-500">
+        <p class="text-sm text-muted-color">
           Data schema and sample data for this project will appear here.
         </p>
       </div>
 
       <div *ngIf="activeTab === 'configuration'">
-        <p class="text-sm text-slate-500">
+        <p class="text-sm text-muted-color">
           Global configuration for this project will appear here.
         </p>
       </div>
@@ -149,13 +115,10 @@
         The project you are trying to edit no longer exists. It may have been removed from this
         browser.
       </p>
-      <button
-        type="button"
-        (click)="goBackToProjects()"
-        class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50"
-      >
-        Back to projects
-      </button>
+      <p-button
+        label="Back to projects"
+        (onClick)="goBackToProjects()"
+      ></p-button>
     </div>
   </div>
 </ng-template>

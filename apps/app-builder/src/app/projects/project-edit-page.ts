@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { TabsModule } from 'primeng/tabs';
 
 interface Project {
   id: string;
@@ -16,7 +19,7 @@ type ProjectTab = 'pages' | 'components' | 'data' | 'configuration';
 @Component({
   selector: 'app-project-edit-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, TabsModule],
   templateUrl: './project-edit-page.html',
   styleUrl: './project-edit-page.css',
 })
@@ -87,10 +90,6 @@ export class ProjectEditPage implements OnInit {
     this.project = { ...this.project, name };
     this.saveProject(this.project);
     this.isEditingName = false;
-  }
-
-  selectTab(tab: ProjectTab): void {
-    this.activeTab = tab;
   }
 
   deleteProject(): void {
