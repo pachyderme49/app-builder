@@ -8,7 +8,7 @@
 🚀 [Finish setting up your workspace](https://cloud.nx.app/connect/rxJO3awxcb) to get faster builds with remote caching, distributed task execution, and self-healing CI. [Learn more about Nx Cloud](https://nx.dev/ci/intro/why-nx-cloud).
 
 ## 📦 Project Overview
-
+ 
 This repository demonstrates a production-ready Angular monorepo with:
 
 - **2 Applications**
