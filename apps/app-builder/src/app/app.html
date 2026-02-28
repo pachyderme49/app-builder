@@ -1,1 +1,76 @@
-<router-outlet></router-outlet>
+<div class="flex h-screen overflow-hidden bg-gray-50">
+  <!-- Sidebar -->
+  <aside
+    class="fixed inset-y-0 left-0 z-50 flex w-72 shrink-0 flex-col border-r border-gray-200 bg-white shadow-default lg:static lg:translate-x-0"
+    [class.-translate-x-full]="!sidebarOpen()"
+    [class.translate-x-0]="sidebarOpen()"
+  >
+    <div class="flex h-16 items-center justify-between border-b border-gray-200 px-6">
+      <a routerLink="/projects" class="flex items-center gap-2">
+        <span class="text-xl font-bold text-brand-600">App Builder</span>
+      </a>
+      <button
+        type="button"
+        class="block rounded p-2 hover:bg-gray-100 lg:hidden"
+        (click)="sidebarOpen.set(!sidebarOpen())"
+        aria-label="Toggle sidebar"
+      >
+        <i class="pi pi-bars text-gray-600"></i>
+      </button>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-4 py-4">
+      <div>
+        <h3 class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          Menu
+        </h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              routerLink="/projects"
+              routerLinkActive="bg-brand-50 text-brand-600 font-medium"
+              [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
+              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-body-dark transition-colors hover:bg-gray-100"
+            >
+              <i class="pi pi-folder text-gray-500 group-[.router-link-active]:text-brand-600"></i>
+              <span>Projects</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  <div
+    class="fixed inset-0 z-40 bg-black/50 lg:hidden"
+    [class.hidden]="!sidebarOpen()"
+    (click)="sidebarOpen.set(false)"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Content area -->
+  <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+    <!-- Header -->
+    <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm md:px-6">
+      <button
+        type="button"
+        class="hidden rounded p-2 hover:bg-gray-100 lg:block"
+        (click)="sidebarOpen.set(!sidebarOpen())"
+        aria-label="Toggle sidebar"
+      >
+        <i class="pi pi-bars text-gray-600"></i>
+      </button>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-500">Dashboard</span>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-1">
+      <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-8">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

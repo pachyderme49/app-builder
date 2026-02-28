@@ -1,5 +1,82 @@
 @import 'primeicons/primeicons.css';
 
+/* TailAdmin-style Foblex Flow baseline styles */
+:root {
+  --background-element-color: rgba(0, 0, 0, 0.06);
+  --selection-area-color: rgba(70, 95, 255, 0.12);
+  --node-background-color: #ffffff;
+  --node-border-radius: 0.5rem;
+  --node-border-color: rgb(229 231 235);
+  --node-selected-border-color: #3641f5;
+  --node-color: rgb(55 65 81);
+  --node-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06);
+  --connection-color: rgb(107 114 128);
+  --connection-path-stroke: 2px;
+}
+
+.f-flow-node {
+  position: relative;
+  min-width: 100px;
+  padding: 12px 16px;
+  color: var(--node-color);
+  text-align: center;
+  background: var(--node-background-color);
+  border-radius: var(--node-border-radius);
+  border: 1px solid var(--node-border-color);
+  cursor: grab;
+  box-shadow: var(--node-shadow);
+}
+
+.f-flow-node:active {
+  cursor: grabbing;
+}
+
+.f-flow-node.f-selected {
+  border-color: var(--node-selected-border-color);
+  box-shadow: 0 0 0 2px rgba(52, 81, 178, 0.2);
+}
+
+.f-flow-node .f-node-input,
+.f-flow-node .f-node-output {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--node-border-color);
+  background-color: var(--node-background-color);
+}
+
+.f-flow-node .f-node-input.left,
+.f-flow-node .f-node-output.left {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.f-flow-node .f-node-output.right,
+.f-flow-node .f-node-input.right {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.f-flow .f-connection-path {
+  fill: none;
+  stroke: var(--connection-color);
+  stroke-width: var(--connection-path-stroke);
+}
+
+.f-flow .f-connection.f-selected .f-connection-path {
+  stroke: var(--node-selected-border-color);
+}
+
+/* TailAdmin base styles */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @layer tailwind-base, primeng, tailwind-utilities;
 
 @layer tailwind-base {

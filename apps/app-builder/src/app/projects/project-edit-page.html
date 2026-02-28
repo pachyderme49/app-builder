@@ -1,123 +1,323 @@
-@if(hasProject){
-<div class="min-h-screen bg-slate-50 text-slate-900">
-  <div class="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
-    <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-      <div class="space-y-1">
-        <div class="flex items-center gap-3">
-          <p-button
-            icon="pi pi-arrow-left"
-            (onClick)="goBackToProjects()"
-            variant="text"
-            size="small"
-            aria-label="Back to projects"
-          ></p-button>
-
-          <div>
-            <div class="flex items-center gap-2">
-              @if(!isEditingName){
-                <div>
-                  <button
-                    type="button"
-                    class="rounded-lg px-0.5 text-left text-2xl font-semibold tracking-tight text-slate-900 hover:bg-slate-100"
-                    (click)="startEditName()"
-                  >
-                    {{ projectName }}
-                  </button>
-                </div>
-              }
-              @else {
-                <form (ngSubmit)="commitEditName()" class="flex items-center gap-2">
-                  <input
-                    type="text"
-                    [(ngModel)]="editedName"
-                    name="projectName"
-                    pInputText
-                    class="min-w-[10rem]"
-                  />
-                  <p-button
-                    type="submit"
-                    label="Save"
-                    size="small"
-                    class="mr-1"
-                  ></p-button>
-                  <p-button
-                    type="button"
-                    label="Cancel"
-                    size="small"
-                    variant="outlined"
-                    (onClick)="cancelEditName()"
-                  ></p-button>
-                </form>
-              }
-            </div>
-
-            <p class="text-xs text-slate-400">
-              Click the name to rename this project.
-            </p>
+@if (hasProject) {
+<div class="project-edit-layout">
+  <header class="project-edit-header">
+    <div class="space-y-1">
+      <div class="flex items-center gap-3">
+        <p-button icon="pi pi-arrow-left" (onClick)="goBackToProjects()" variant="text" size="small"
+          aria-label="Back to projects" styleClass="text-gray-600 hover:bg-gray-100"></p-button>
+        <div>
+          <div class="flex items-center gap-2">
+            @if (!isEditingName) {
+              <button
+                type="button"
+                class="rounded-lg px-2 py-1 text-left text-xl font-bold text-gray-900 transition-colors hover:bg-gray-100 md:text-2xl"
+                (click)="startEditName()"
+              >
+                {{ projectName }}
+              </button>
+            } @else {
+              <form (ngSubmit)="commitEditName()" class="flex items-center gap-2">
+                <input type="text" [(ngModel)]="editedName" name="projectName" pInputText class="min-w-[10rem] rounded-lg border-gray-200" />
+                <p-button type="submit" label="Save" size="small"></p-button>
+                <p-button type="button" label="Cancel" size="small" variant="outlined" (onClick)="cancelEditName()"></p-button>
+              </form>
+            }
           </div>
+          <p class="mt-1 text-xs text-gray-500">Click the name to rename this project.</p>
         </div>
       </div>
-
-      <div class="flex items-center gap-2 self-end">
-        <p-button
-          label="⋯"
-          variant="text"
-          aria-label="Project menu"
-          (onClick)="deleteProject()"
-        ></p-button>
-      </div>
-    </header>
-
-    <section class="border-b border-slate-200">
-      <p-tabs [(value)]="activeTab">
-        <p-tablist>
-          <p-tab value="pages">Pages</p-tab>
-          <p-tab value="components">Components</p-tab>
-          <p-tab value="data">Data</p-tab>
-          <p-tab value="configuration">Configuration</p-tab>
-        </p-tablist>
-      </p-tabs>
-    </section>
-
-    <section class="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
-      @if(activeTab === 'pages'){
-        <p class="text-sm text-muted-color">
-          Pages configuration for this project will appear here.
-        </p>
-      }
-      @else if(activeTab === 'components'){
-        <p class="text-sm text-muted-color">
-          Components for this project will appear here.
-        </p>
-      }
-      @else if(activeTab === 'data'){
-        <p class="text-sm text-muted-color">
-          Data schema and sample data for this project will appear here.
-        </p>
-      }
-      @else if(activeTab === 'configuration'){
-        <p class="text-sm text-muted-color">
-          Global configuration for this project will appear here.
-        </p>
-      }
-    </section>
-  </div>
-</div>
-}
-@else {
-  <div class="min-h-screen bg-slate-50 text-slate-900">
-    <div
-      class="mx-auto flex max-w-xl flex-col items-center justify-center gap-4 px-4 py-16 text-center"
-    >
-      <p class="text-sm font-medium text-slate-500">Project not found</p>
-      <p class="text-xs text-slate-400">
-        The project you are trying to edit no longer exists. It may have been removed from this
-        browser.
-      </p>
-      <p-button
-        label="Back to projects"
-        (onClick)="goBackToProjects()"
-      ></p-button>
     </div>
+    <div class="flex items-center gap-2 self-end">
+      <p-button label="⋯" variant="text" aria-label="Project menu" (onClick)="deleteProject()" styleClass="text-gray-600 hover:bg-gray-100"></p-button>
+    </div>
+  </header>
+
+  <section class="project-edit-tabs rounded-t-xl border border-b-0 border-gray-200 bg-white">
+    <p-tabs [(value)]="activeTab">
+      <p-tablist>
+        <p-tab value="pages">Pages</p-tab>
+        <p-tab value="components">Components</p-tab>
+        <p-tab value="data">Data</p-tab>
+        <p-tab value="configuration">Configuration</p-tab>
+      </p-tablist>
+    </p-tabs>
+  </section>
+
+  <section class="project-edit-content">
+    @if (activeTab === 'pages') {
+      <div class="project-edit-flow-area">
+        @if (pagesPanelCollapsed()) {
+          <aside class="flex shrink-0 flex-col border-r border-gray-200 bg-gray-50" style="width: 48px">
+            <button
+              type="button"
+              class="flex h-12 w-full items-center justify-center border-b border-gray-200 hover:bg-gray-100"
+              (click)="togglePagesPanel()"
+              aria-label="Expand panel"
+            >
+              <i class="pi pi-chevron-right text-gray-500"></i>
+            </button>
+          </aside>
+        } @else {
+          <aside class="relative flex shrink-0 flex-col border-r border-gray-200 bg-white" [style.width.px]="pagesPanelWidth()">
+            <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+              <span class="text-sm font-semibold text-gray-700">Palette</span>
+              <button type="button" class="rounded-lg p-2 transition-colors hover:bg-gray-100" (click)="togglePagesPanel()" aria-label="Collapse panel">
+                <i class="pi pi-chevron-left text-gray-500"></i>
+              </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+              <section class="mb-6">
+                <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Pages préfaites</h4>
+                <div class="flex flex-col gap-2">
+                  @for (item of PAGES_PREFAITES; track item.id) {
+                    <div
+                      class="cursor-grab rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-brand-300 hover:shadow-default"
+                      fExternalItem
+                      [fData]="{ type: 'page', name: item.name }"
+                    >
+                      {{ item.name }}
+                    </div>
+                  }
+                </div>
+              </section>
+              <section>
+                <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Modules</h4>
+                <p class="mb-3 text-xs text-gray-500">Glissez sur un nœud page pour l'ajouter</p>
+                <div class="flex flex-col gap-2">
+                  @for (item of MODULES; track item.id) {
+                    <div
+                      class="cursor-grab rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-brand-300 hover:shadow-default"
+                      fExternalItem
+                      [fData]="{ type: 'module', name: item.name }"
+                    >
+                      {{ item.name }}
+                    </div>
+                  }
+                  @if (selectedPagesNodeId()) {
+                    <p class="mt-3 text-xs text-gray-500">ou cliquez pour ajouter à la page sélectionnée :</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      @for (item of MODULES; track item.id) {
+                        <button
+                          type="button"
+                          class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-brand-50 hover:border-brand-200"
+                          (click)="addModuleToPage(selectedPagesNodeId()!, item.name)"
+                        >
+                          + {{ item.name }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              </section>
+            </div>
+            <div
+              class="absolute right-0 top-0 h-full w-1 cursor-col-resize transition-colors hover:bg-brand-300"
+              (mousedown)="startResize($event)"
+              role="separator"
+              aria-label="Resize panel"
+            ></div>
+          </aside>
+        }
+        <div class="project-edit-flow-wrapper">
+          <f-flow
+            #pagesFlow
+            fDraggable
+            (fSelectionChange)="onPagesSelectionChange($event)"
+            (fCreateNode)="onCreatePageNode($event)"
+            (fCreateConnection)="onPagesCreateConnection($event)"
+            (fReassignConnection)="onPagesReassignConnection($event)"
+          >
+            <f-canvas>
+              <f-connection-for-create fType="bezier"></f-connection-for-create>
+              <f-snap-connection></f-snap-connection>
+              @for (node of pagesNodes(); track node.id) {
+                <div
+                  class="f-flow-node"
+                  fNode
+                  [fNodeId]="node.id"
+                  [fNodePosition]="{ x: node.x, y: node.y }"
+                  (fNodePositionChange)="onPagesNodePositionChange(node.id, $event.x, $event.y)"
+                  fDragHandle
+                >
+                  <span fNodeOutput [fOutputId]="node.id + '-out'" fOutputConnectableSide="right"></span>
+                  <span fNodeInput [fInputId]="node.id + '-in'" fInputConnectableSide="left"></span>
+                  <span class="block font-medium text-gray-900">{{ node.name }}</span>
+                  @if (node.modules && node.modules.length > 0) {
+                    <div class="mt-2 flex flex-wrap gap-1.5 border-t border-gray-200 pt-2">
+                      @for (mod of node.modules; track mod) {
+                        <span class="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">{{ mod }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              @for (conn of pagesConnections(); track conn.id) {
+                <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId" fType="bezier"></f-connection>
+              }
+            </f-canvas>
+          </f-flow>
+        </div>
+        @if (selectedPagesNodeId()) {
+          <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-4">
+            <h3 class="mb-4 text-base font-bold text-gray-900">Edit node</h3>
+            <div class="mb-4 flex flex-col gap-3">
+              <label class="text-sm font-medium text-gray-700">Name</label>
+              <input type="text" [ngModel]="editingNodeName()" (ngModelChange)="editingNodeName.set($event)" pInputText class="w-full rounded-lg border-gray-200" />
+              <p-button label="Save" size="small" (onClick)="savePagesNodeName()"></p-button>
+            </div>
+            <hr class="mb-4 border-gray-200" />
+            <h4 class="mb-3 text-sm font-semibold text-gray-700">Liens</h4>
+            <div class="mb-4 flex flex-col gap-2">
+              <label class="text-sm font-medium text-gray-700">Ajouter un lien</label>
+              <p-select
+                [ngModel]="newConnectionTarget()"
+                (ngModelChange)="newConnectionTarget.set($event)"
+                [options]="pagesNodes()"
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Sélectionner la cible"
+                class="w-full"
+                [style]="{ minWidth: '100%' }"
+              ></p-select>
+              <p-button
+                label="Ajouter"
+                size="small"
+                (onClick)="addPagesConnection()"
+                [disabled]="!newConnectionTarget() || newConnectionTarget() === selectedPagesNodeId()"
+              ></p-button>
+            </div>
+            <p class="mb-3 text-xs text-gray-500">Ou glissez-déposez depuis un output vers un input.</p>
+            <div class="mb-4 flex flex-col gap-2">
+              @for (conn of pagesConnectionsForNode(selectedPagesNodeId()); track conn.id) {
+                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+                  <span class="text-gray-700">{{ getNodeName(conn.outputId, pagesNodes()) }} → {{ getNodeName(conn.inputId, pagesNodes()) }}</span>
+                  <button
+                    type="button"
+                    class="rounded p-1 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
+                    (click)="deleteConnectionById(conn.id, 'pages')"
+                    aria-label="Supprimer le lien"
+                  >
+                    <i class="pi pi-trash text-xs"></i>
+                  </button>
+                </div>
+              } @empty {
+                <p class="text-sm text-gray-500">Aucun lien</p>
+              }
+            </div>
+            @if (selectedPagesConnectionIds().length > 0) {
+              <p-button label="Supprimer la sélection (Delete)" severity="danger" size="small" (onClick)="deletePagesConnections()"></p-button>
+            }
+          </aside>
+        }
+      </div>
+    } @else if (activeTab === 'components') {
+      <div class="project-edit-flow-area">
+        <div class="project-edit-flow-wrapper">
+          <f-flow
+            #componentsFlow
+            fDraggable
+            (fSelectionChange)="onComponentsSelectionChange($event)"
+            (fCreateConnection)="onComponentsCreateConnection($event)"
+            (fReassignConnection)="onComponentsReassignConnection($event)"
+          >
+            <f-canvas>
+              <f-connection-for-create fType="bezier"></f-connection-for-create>
+              <f-snap-connection></f-snap-connection>
+              @for (conn of componentsConnections(); track conn.id) {
+                <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId" fType="bezier"></f-connection>
+              }
+              @for (node of componentsNodes(); track node.id) {
+                <div
+                  class="f-flow-node"
+                  fNode
+                  [fNodeId]="node.id"
+                  [fNodePosition]="{ x: node.x, y: node.y }"
+                  (fNodePositionChange)="onComponentsNodePositionChange(node.id, $event.x, $event.y)"
+                  fDragHandle
+                >
+                  <span fNodeOutput [fOutputId]="node.id + '-out'" fOutputConnectableSide="right"></span>
+                  <span fNodeInput [fInputId]="node.id + '-in'" fInputConnectableSide="left"></span>
+                  <span class="block font-medium text-gray-900">{{ node.name }}</span>
+                </div>
+              }
+            </f-canvas>
+          </f-flow>
+        </div>
+        @if (selectedComponentsNodeId()) {
+          <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-4">
+            <h3 class="mb-4 text-base font-bold text-gray-900">Edit node</h3>
+            <div class="mb-4 flex flex-col gap-3">
+              <label class="text-sm font-medium text-gray-700">Name</label>
+              <input type="text" [ngModel]="editingNodeName()" (ngModelChange)="editingNodeName.set($event)" pInputText class="w-full rounded-lg border-gray-200" />
+              <p-button label="Save" size="small" (onClick)="saveComponentsNodeName()"></p-button>
+            </div>
+            <hr class="mb-4 border-gray-200" />
+            <h4 class="mb-3 text-sm font-semibold text-gray-700">Liens</h4>
+            <div class="mb-4 flex flex-col gap-2">
+              <label class="text-sm font-medium text-gray-700">Ajouter un lien</label>
+              <p-select
+                [ngModel]="newConnectionTarget()"
+                (ngModelChange)="newConnectionTarget.set($event)"
+                [options]="componentsNodes()"
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Sélectionner la cible"
+                class="w-full"
+                [style]="{ minWidth: '100%' }"
+              ></p-select>
+              <p-button
+                label="Ajouter"
+                size="small"
+                (onClick)="addComponentsConnection()"
+                [disabled]="!newConnectionTarget() || newConnectionTarget() === selectedComponentsNodeId()"
+              ></p-button>
+            </div>
+            <p class="mb-3 text-xs text-gray-500">Ou glissez-déposez depuis un output vers un input.</p>
+            <div class="mb-4 flex flex-col gap-2">
+              @for (conn of componentsConnectionsForNode(selectedComponentsNodeId()); track conn.id) {
+                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+                  <span class="text-gray-700">{{ getNodeName(conn.outputId, componentsNodes()) }} → {{ getNodeName(conn.inputId, componentsNodes()) }}</span>
+                  <button
+                    type="button"
+                    class="rounded p-1 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
+                    (click)="deleteConnectionById(conn.id, 'components')"
+                    aria-label="Supprimer le lien"
+                  >
+                    <i class="pi pi-trash text-xs"></i>
+                  </button>
+                </div>
+              } @empty {
+                <p class="text-sm text-gray-500">Aucun lien</p>
+              }
+            </div>
+            @if (selectedComponentsConnectionIds().length > 0) {
+              <p-button label="Supprimer la sélection (Delete)" severity="danger" size="small" (onClick)="deleteComponentsConnections()"></p-button>
+            }
+          </aside>
+        }
+      </div>
+    } @else if (activeTab === 'data') {
+      <div class="rounded-xl border border-gray-200 bg-white p-8">
+        <p class="text-sm text-gray-500">Data schema and sample data for this project will appear here.</p>
+      </div>
+    } @else if (activeTab === 'configuration') {
+      <div class="rounded-xl border border-gray-200 bg-white p-8">
+        <p class="text-sm text-gray-500">Global configuration for this project will appear here.</p>
+      </div>
+    }
+  </section>
+</div>
+} @else {
+<div class="flex min-h-[50vh] w-full flex-col items-center justify-center gap-6 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-16 text-center">
+  <div class="rounded-full bg-red-100 p-4">
+    <i class="pi pi-exclamation-triangle text-2xl text-red-600"></i>
   </div>
+  <div>
+    <p class="font-semibold text-gray-900">Project not found</p>
+    <p class="mt-2 max-w-sm text-sm text-gray-500">
+      The project you are trying to edit no longer exists. It may have been removed from this browser.
+    </p>
+  </div>
+  <p-button label="Back to projects" (onClick)="goBackToProjects()" icon="pi pi-arrow-left" iconPos="left"></p-button>
+</div>
 }

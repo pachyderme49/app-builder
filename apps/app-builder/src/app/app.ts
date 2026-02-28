@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 
 @Component({
-  imports: [RouterModule],
+  imports: [RouterModule, RouterLink, RouterLinkActive],
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
 export class App {
-  protected title = 'app-builder';
+  protected title = 'App Builder';
+  protected sidebarOpen = signal(true);
 }

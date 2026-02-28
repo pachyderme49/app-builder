@@ -1,59 +1,78 @@
-<div class="min-h-screen bg-slate-50 text-slate-900">
-  <div class="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-    <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-      <div>
-        <h1 class="text-3xl font-semibold tracking-tight text-slate-900">Projects</h1>
-        <p class="mt-1 text-sm text-slate-500">
-          Create and manage your projects locally in this browser.
-        </p>
-      </div>
-    </header>
+<div class="space-y-8">
+  <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 md:text-3xl">Projects</h1>
+      <p class="mt-1 text-sm text-body">
+        Create and manage your projects locally in this browser.
+      </p>
+    </div>
+  </header>
 
-    <section
-      class="rounded-2xl border border-dashed border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-6">
-      <form class="flex flex-col gap-3 sm:flex-row sm:items-end" (ngSubmit)="addProject()">
-        <label class="flex-1 text-sm font-medium text-slate-700">
-          Project name
-          <input type="text" name="projectName" [(ngModel)]="newProjectName" placeholder="Enter a project name"
-            pInputText class="mt-1 w-full" />
-        </label>
+  <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-card">
+    <form class="flex flex-col gap-4 sm:flex-row sm:items-end" (ngSubmit)="addProject()">
+      <label class="flex-1">
+        <span class="mb-2 block text-sm font-medium text-gray-700">Project name</span>
+        <input
+          type="text"
+          name="projectName"
+          [(ngModel)]="newProjectName"
+          placeholder="Enter a project name"
+          pInputText
+          class="w-full rounded-lg border-gray-200"
+        />
+      </label>
+      <p-button
+        type="submit"
+        label="Add project"
+        [disabled]="!newProjectName.trim()"
+      ></p-button>
+    </form>
+  </section>
 
-        <div class="sm:pb-0.5">
-          <p-button type="submit" label="Add project" [disabled]="!newProjectName.trim()"></p-button>
-        </div>
-      </form>
-    </section>
+  <section class="space-y-4">
+    <div class="flex items-center justify-between gap-2">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500">
+        Your projects
+      </h2>
+      <span class="text-xs text-gray-400">
+        {{ projects.length }} {{ projects.length === 1 ? 'project' : 'projects' }}
+      </span>
+    </div>
 
-    <section class="space-y-4">
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Your projects
-        </h2>
-        <span class="text-xs text-slate-400">
-          {{ projects.length }} {{ projects.length === 1 ? 'project' : 'projects' }}
-        </span>
-      </div>
-      @if(hasProjects){
+    @if (hasProjects) {
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        @for(project of projects; track project.id){
-        <p-card class="cursor-pointer transition-shadow hover:shadow-md" (click)="openProject(project.id)">
-          <ng-template #title> {{ project.name }} </ng-template>
-        </p-card>
-        } @empty {
-        <p>No projects found.</p>
+        @for (project of projects; track project.id) {
+          <div
+            class="cursor-pointer rounded-xl border border-gray-200 bg-white p-6 shadow-card transition-all hover:border-brand-200 hover:shadow-default"
+            (click)="openProject(project.id)"
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex-1 min-w-0">
+                <h3 class="truncate text-lg font-semibold text-gray-900">{{ project.name }}</h3>
+                <p class="mt-1 text-xs text-gray-500">
+                  Created {{ project.createdAt | date:'short' }}
+                </p>
+              </div>
+              <i class="pi pi-chevron-right ml-2 shrink-0 text-gray-400"></i>
+            </div>
+          </div>
         }
       </div>
-      }
-      @else {
+    } @else {
       <div
-        class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 px-6 py-10 text-center text-sm text-slate-500">
-        <p class="font-medium text-slate-600">No projects yet</p>
-        <p class="max-w-sm text-xs text-slate-400">
-          Start by creating your first project using the form above. Your projects are stored
-          locally in this browser.
-        </p>
+        class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center"
+      >
+        <div class="rounded-full bg-brand-100 p-4">
+          <i class="pi pi-folder-open text-2xl text-brand-600"></i>
+        </div>
+        <div>
+          <p class="font-medium text-gray-700">No projects yet</p>
+          <p class="mt-1 max-w-sm text-sm text-gray-500">
+            Start by creating your first project using the form above. Your projects are stored
+            locally in this browser.
+          </p>
+        </div>
       </div>
-      }
-    </section>
-  </div>
+    }
+  </section>
 </div>
