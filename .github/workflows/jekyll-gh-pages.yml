@@ -19,11 +19,11 @@ jobs:
         run: npm ci
 
       - name: Build Angular/Nx app
-        run: npx nx build --prod # ou `ng build --configuration=production` si tu n'utilises pas Nx
+        run: npx nx build app-builder --prod
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/apps/app-builder # Chemin vers le dossier de build (à adapter)
-          keep_files: false # Nettoie les anciens fichiers
+          publish_dir: ./dist/apps/app-builder
+          keep_files: false
