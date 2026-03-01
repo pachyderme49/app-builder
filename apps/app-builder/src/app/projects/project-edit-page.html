@@ -1,6 +1,7 @@
 @if (hasProject) {
-<div class="project-edit-layout">
-  <header class="project-edit-header">
+<div class="grid min-h-[calc(100vh-8rem)] w-full grid-rows-[auto_auto_1fr] gap-0">
+  <!-- Header style liste projets -->
+  <header class="grid grid-cols-[1fr_auto] items-start gap-4 py-4 pt-0">
     <div class="space-y-1">
       <div class="flex items-center gap-3">
         <p-button icon="pi pi-arrow-left" (onClick)="goBackToProjects()" variant="text" size="small"
@@ -8,31 +9,33 @@
         <div>
           <div class="flex items-center gap-2">
             @if (!isEditingName) {
-              <button
-                type="button"
-                class="rounded-lg px-2 py-1 text-left text-xl font-bold text-gray-900 transition-colors hover:bg-gray-100 md:text-2xl"
-                (click)="startEditName()"
-              >
-                {{ projectName }}
-              </button>
+            <button type="button"
+              class="rounded-lg px-2 py-1 text-left text-2xl font-bold text-gray-900 transition-colors hover:bg-gray-100 md:text-3xl"
+              (click)="startEditName()">
+              {{ projectName }}
+            </button>
             } @else {
-              <form (ngSubmit)="commitEditName()" class="flex items-center gap-2">
-                <input type="text" [(ngModel)]="editedName" name="projectName" pInputText class="min-w-[10rem] rounded-lg border-gray-200" />
-                <p-button type="submit" label="Save" size="small"></p-button>
-                <p-button type="button" label="Cancel" size="small" variant="outlined" (onClick)="cancelEditName()"></p-button>
-              </form>
+            <form (ngSubmit)="commitEditName()" class="flex items-center gap-2">
+              <input type="text" [(ngModel)]="editedName" name="projectName" pInputText
+                class="min-w-[10rem] rounded-lg border-gray-200" />
+              <p-button type="submit" label="Save" size="small"></p-button>
+              <p-button type="button" label="Cancel" size="small" variant="outlined"
+                (onClick)="cancelEditName()"></p-button>
+            </form>
             }
           </div>
-          <p class="mt-1 text-xs text-gray-500">Click the name to rename this project.</p>
+          <p class="mt-1 text-sm text-body">Cliquez sur le nom pour le modifier.</p>
         </div>
       </div>
     </div>
     <div class="flex items-center gap-2 self-end">
-      <p-button label="⋯" variant="text" aria-label="Project menu" (onClick)="deleteProject()" styleClass="text-gray-600 hover:bg-gray-100"></p-button>
+      <p-button label="⋯" variant="text" aria-label="Project menu" (onClick)="deleteProject()"
+        styleClass="text-gray-600 hover:bg-gray-100"></p-button>
     </div>
   </header>
 
-  <section class="project-edit-tabs rounded-t-xl border border-b-0 border-gray-200 bg-white">
+  <!-- Onglets dans une carte style projet -->
+  <section class="min-h-12 rounded-t-xl border border-b-0 border-gray-200 bg-white shadow-card">
     <p-tabs [(value)]="activeTab">
       <p-tablist>
         <p-tab value="pages">Pages</p-tab>
@@ -43,281 +46,249 @@
     </p-tabs>
   </section>
 
-  <section class="project-edit-content">
+  <!-- Contenu principal : carte blanche arrondie -->
+  <section class="min-h-0 overflow-hidden rounded-b-xl border border-gray-200 bg-white shadow-card">
     @if (activeTab === 'pages') {
-      <div class="project-edit-flow-area">
-        @if (pagesPanelCollapsed()) {
-          <aside class="flex shrink-0 flex-col border-r border-gray-200 bg-gray-50" style="width: 48px">
-            <button
-              type="button"
-              class="flex h-12 w-full items-center justify-center border-b border-gray-200 hover:bg-gray-100"
-              (click)="togglePagesPanel()"
-              aria-label="Expand panel"
-            >
-              <i class="pi pi-chevron-right text-gray-500"></i>
-            </button>
-          </aside>
-        } @else {
-          <aside class="relative flex shrink-0 flex-col border-r border-gray-200 bg-white" [style.width.px]="pagesPanelWidth()">
-            <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-              <span class="text-sm font-semibold text-gray-700">Palette</span>
-              <button type="button" class="rounded-lg p-2 transition-colors hover:bg-gray-100" (click)="togglePagesPanel()" aria-label="Collapse panel">
-                <i class="pi pi-chevron-left text-gray-500"></i>
+    <div class="grid h-full min-h-[400px] grid-cols-[auto_1fr_auto] overflow-hidden">
+      @if (pagesPanelCollapsed()) {
+      <aside class="flex w-12 shrink-0 flex-col border-r border-gray-200 bg-gray-50">
+        <button type="button"
+          class="flex h-12 w-full items-center justify-center border-b border-gray-200 hover:bg-gray-100"
+          (click)="togglePagesPanel()" aria-label="Ouvrir le panneau">
+          <i class="pi pi-chevron-right text-gray-500"></i>
+        </button>
+      </aside>
+      } @else {
+      <aside class="relative flex shrink-0 flex-col border-r border-gray-200 bg-white"
+        [style.width.px]="pagesPanelWidth()">
+        <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+          <span class="text-sm font-semibold text-gray-700">Palette</span>
+          <button type="button" class="rounded-lg p-2 transition-colors hover:bg-gray-100" (click)="togglePagesPanel()"
+            aria-label="Replier le panneau">
+            <i class="pi pi-chevron-left text-gray-500"></i>
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4">
+          <section class="mb-6">
+            <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Pages préfaites</h4>
+            <p class="mb-3 text-xs text-gray-500">Glissez une page sur le canvas</p>
+            <div class="flex flex-col gap-2">
+              @for (item of PAGES_PREFAITES; track item.id) {
+              <div
+                class="flow-palette-item flex cursor-grab items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-brand-300 hover:bg-brand-50/50 active:cursor-grabbing"
+                fExternalItem [fData]="{ type: item.type, name: item.name }">
+                <i class="pi {{ getPageTypeIcon(item.type) }} text-base text-brand-600"></i>
+                <span>{{ item.name }}</span>
+              </div>
+              }
+            </div>
+          </section>
+          <section>
+            <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Modules</h4>
+            <p class="mb-3 text-xs text-gray-500">Glissez sur un nœud page pour l'ajouter</p>
+            <div class="flex flex-col gap-2">
+              @for (item of MODULES; track item.id) {
+              <div
+                class="flow-palette-item flex cursor-grab items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-brand-300 hover:bg-brand-50/50 active:cursor-grabbing"
+                fExternalItem [fData]="{ type: 'module', name: item.name }">
+                <i class="pi pi-box text-base text-brand-600"></i>
+                <span>{{ item.name }}</span>
+              </div>
+              }
+              @if (selectedPagesNodeId()) {
+              <p class="mt-3 text-xs text-gray-500">ou cliquez pour ajouter à la page sélectionnée :</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                @for (item of MODULES; track item.id) {
+                <button type="button"
+                  class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-brand-200 hover:bg-brand-50"
+                  (click)="addModuleToPage(selectedPagesNodeId()!, item.name)">
+                  + {{ item.name }}
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </section>
+        </div>
+        <div class="absolute right-0 top-0 h-full w-1 cursor-col-resize transition-colors hover:bg-brand-300"
+          (mousedown)="startResize($event)" role="separator" aria-label="Redimensionner"></div>
+      </aside>
+      }
+      <div class="h-full min-h-0 overflow-hidden [&_f-flow]:block [&_f-flow]:h-full [&_f-flow]:w-full">
+        <f-flow #pagesFlow fDraggable (fSelectionChange)="onPagesSelectionChange($event)"
+          (fCreateNode)="onCreatePageNode($event)" (fCreateConnection)="onPagesCreateConnection($event)"
+          (fReassignConnection)="onPagesReassignConnection($event)">
+          <f-background>
+            <f-rect-pattern [vSize]="24" [hSize]="24" vColor="rgba(0,0,0,0.07)" hColor="rgba(0,0,0,0.07)"></f-rect-pattern>
+          </f-background>
+          <f-canvas #pagesCanvas fZoom>
+            <f-connection-for-create fType="bezier"></f-connection-for-create>
+            <f-snap-connection></f-snap-connection>
+            @for (node of pagesNodes(); track node.id) {
+            <div class="f-flow-node flow-node-foblex" fNode [fNodeId]="node.id" [fNodePosition]="{ x: node.x, y: node.y }"
+              (fNodePositionChange)="onPagesNodePositionChange(node.id, $event.x, $event.y)">
+              <span class="flow-node-anchor flow-node-anchor-input" fNodeInput [fInputId]="node.id + '-in'" [fInputMultiple]="true" fInputConnectableSide="left"></span>
+              <div class="flow-node-drag-area" fDragHandle>
+                <div class="flex min-w-0 flex-1 items-center gap-2">
+                  <i class="pi {{ getNodeIcon(node) }} flow-node-icon"></i>
+                  <span class="flow-node-name">{{ node.name }}</span>
+                </div>
+                @if (node.modules && node.modules.length > 0) {
+                <div class="mt-2 flex w-full flex-wrap gap-1.5 border-t border-gray-200/60 pt-2">
+                  @for (mod of node.modules; track mod) {
+                  <span class="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">{{ mod }}</span>
+                  }
+                </div>
+                }
+              </div>
+              <button type="button" class="flow-node-remove" (click)="deletePagesNode(node.id); $event.stopPropagation()"
+                aria-label="Supprimer">
+                <i class="pi pi-times"></i>
               </button>
+              <span class="flow-node-anchor flow-node-anchor-output" fNodeOutput [fOutputId]="node.id + '-out'" [fOutputMultiple]="true" fOutputConnectableSide="right"></span>
             </div>
-            <div class="flex-1 overflow-y-auto p-4">
-              <section class="mb-6">
-                <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Pages préfaites</h4>
-                <div class="flex flex-col gap-2">
-                  @for (item of PAGES_PREFAITES; track item.id) {
-                    <div
-                      class="cursor-grab rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-brand-300 hover:shadow-default"
-                      fExternalItem
-                      [fData]="{ type: 'page', name: item.name }"
-                    >
-                      {{ item.name }}
-                    </div>
-                  }
-                </div>
-              </section>
-              <section>
-                <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Modules</h4>
-                <p class="mb-3 text-xs text-gray-500">Glissez sur un nœud page pour l'ajouter</p>
-                <div class="flex flex-col gap-2">
-                  @for (item of MODULES; track item.id) {
-                    <div
-                      class="cursor-grab rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-brand-300 hover:shadow-default"
-                      fExternalItem
-                      [fData]="{ type: 'module', name: item.name }"
-                    >
-                      {{ item.name }}
-                    </div>
-                  }
-                  @if (selectedPagesNodeId()) {
-                    <p class="mt-3 text-xs text-gray-500">ou cliquez pour ajouter à la page sélectionnée :</p>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      @for (item of MODULES; track item.id) {
-                        <button
-                          type="button"
-                          class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-brand-50 hover:border-brand-200"
-                          (click)="addModuleToPage(selectedPagesNodeId()!, item.name)"
-                        >
-                          + {{ item.name }}
-                        </button>
-                      }
-                    </div>
-                  }
-                </div>
-              </section>
-            </div>
-            <div
-              class="absolute right-0 top-0 h-full w-1 cursor-col-resize transition-colors hover:bg-brand-300"
-              (mousedown)="startResize($event)"
-              role="separator"
-              aria-label="Resize panel"
-            ></div>
-          </aside>
-        }
-        <div class="project-edit-flow-wrapper">
-          <f-flow
-            #pagesFlow
-            fDraggable
-            (fSelectionChange)="onPagesSelectionChange($event)"
-            (fCreateNode)="onCreatePageNode($event)"
-            (fCreateConnection)="onPagesCreateConnection($event)"
-            (fReassignConnection)="onPagesReassignConnection($event)"
-          >
-            <f-canvas>
-              <f-connection-for-create fType="bezier"></f-connection-for-create>
-              <f-snap-connection></f-snap-connection>
-              @for (node of pagesNodes(); track node.id) {
-                <div
-                  class="f-flow-node"
-                  fNode
-                  [fNodeId]="node.id"
-                  [fNodePosition]="{ x: node.x, y: node.y }"
-                  (fNodePositionChange)="onPagesNodePositionChange(node.id, $event.x, $event.y)"
-                  fDragHandle
-                >
-                  <span fNodeOutput [fOutputId]="node.id + '-out'" fOutputConnectableSide="right"></span>
-                  <span fNodeInput [fInputId]="node.id + '-in'" fInputConnectableSide="left"></span>
-                  <span class="block font-medium text-gray-900">{{ node.name }}</span>
-                  @if (node.modules && node.modules.length > 0) {
-                    <div class="mt-2 flex flex-wrap gap-1.5 border-t border-gray-200 pt-2">
-                      @for (mod of node.modules; track mod) {
-                        <span class="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">{{ mod }}</span>
-                      }
-                    </div>
-                  }
-                </div>
-              }
-              @for (conn of pagesConnections(); track conn.id) {
-                <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId" fType="bezier"></f-connection>
-              }
-            </f-canvas>
-          </f-flow>
-        </div>
-        @if (selectedPagesNodeId()) {
-          <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-4">
-            <h3 class="mb-4 text-base font-bold text-gray-900">Edit node</h3>
-            <div class="mb-4 flex flex-col gap-3">
-              <label class="text-sm font-medium text-gray-700">Name</label>
-              <input type="text" [ngModel]="editingNodeName()" (ngModelChange)="editingNodeName.set($event)" pInputText class="w-full rounded-lg border-gray-200" />
-              <p-button label="Save" size="small" (onClick)="savePagesNodeName()"></p-button>
-            </div>
-            <hr class="mb-4 border-gray-200" />
-            <h4 class="mb-3 text-sm font-semibold text-gray-700">Liens</h4>
-            <div class="mb-4 flex flex-col gap-2">
-              <label class="text-sm font-medium text-gray-700">Ajouter un lien</label>
-              <p-select
-                [ngModel]="newConnectionTarget()"
-                (ngModelChange)="newConnectionTarget.set($event)"
-                [options]="pagesNodes()"
-                optionLabel="name"
-                optionValue="id"
-                placeholder="Sélectionner la cible"
-                class="w-full"
-                [style]="{ minWidth: '100%' }"
-              ></p-select>
-              <p-button
-                label="Ajouter"
-                size="small"
-                (onClick)="addPagesConnection()"
-                [disabled]="!newConnectionTarget() || newConnectionTarget() === selectedPagesNodeId()"
-              ></p-button>
-            </div>
-            <p class="mb-3 text-xs text-gray-500">Ou glissez-déposez depuis un output vers un input.</p>
-            <div class="mb-4 flex flex-col gap-2">
-              @for (conn of pagesConnectionsForNode(selectedPagesNodeId()); track conn.id) {
-                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-                  <span class="text-gray-700">{{ getNodeName(conn.outputId, pagesNodes()) }} → {{ getNodeName(conn.inputId, pagesNodes()) }}</span>
-                  <button
-                    type="button"
-                    class="rounded p-1 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
-                    (click)="deleteConnectionById(conn.id, 'pages')"
-                    aria-label="Supprimer le lien"
-                  >
-                    <i class="pi pi-trash text-xs"></i>
-                  </button>
-                </div>
-              } @empty {
-                <p class="text-sm text-gray-500">Aucun lien</p>
-              }
-            </div>
-            @if (selectedPagesConnectionIds().length > 0) {
-              <p-button label="Supprimer la sélection (Delete)" severity="danger" size="small" (onClick)="deletePagesConnections()"></p-button>
             }
-          </aside>
-        }
+            @for (conn of pagesConnections(); track conn.id) {
+            <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId"
+              fType="bezier"></f-connection>
+            }
+          </f-canvas>
+        </f-flow>
       </div>
+      @if (selectedPagesNodeId()) {
+      <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900">Modifier le nœud</h3>
+        <div class="mb-4 flex flex-col gap-3">
+          <label class="text-sm font-medium text-gray-700">Nom</label>
+          <input type="text" [ngModel]="editingNodeName()" (ngModelChange)="editingNodeName.set($event)" pInputText
+            class="w-full rounded-lg border-gray-200" />
+          <p-button label="Enregistrer" size="small" (onClick)="savePagesNodeName()"></p-button>
+        </div>
+        <hr class="mb-4 border-gray-200" />
+        <h4 class="mb-3 text-sm font-semibold text-gray-700">Liens</h4>
+        <div class="mb-4 flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700">Ajouter un lien</label>
+          <p-select [ngModel]="newConnectionTarget()" (ngModelChange)="newConnectionTarget.set($event)"
+            [options]="pagesNodes()" optionLabel="name" optionValue="id" placeholder="Sélectionner la cible"
+            class="w-full" [style]="{ minWidth: '100%' }"></p-select>
+          <p-button label="Ajouter" size="small" (onClick)="addPagesConnection()"
+            [disabled]="!newConnectionTarget() || newConnectionTarget() === selectedPagesNodeId()"></p-button>
+        </div>
+        <p class="mb-3 text-xs text-gray-500">Ou glissez-déposez depuis un output vers un input.</p>
+        <div class="mb-4 flex flex-col gap-2">
+          @for (conn of pagesConnectionsForNode(selectedPagesNodeId()); track conn.id) {
+          <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            <span class="text-gray-700">{{ getNodeName(conn.outputId, pagesNodes()) }} → {{
+              getNodeName(conn.inputId, pagesNodes()) }}</span>
+            <button type="button" class="rounded p-1 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
+              (click)="deleteConnectionById(conn.id, 'pages')" aria-label="Supprimer le lien">
+              <i class="pi pi-trash text-xs"></i>
+            </button>
+          </div>
+          } @empty {
+          <p class="text-sm text-gray-500">Aucun lien</p>
+          }
+        </div>
+        @if (selectedPagesConnectionIds().length > 0) {
+        <p-button label="Supprimer la sélection (Delete)" severity="danger" size="small"
+          (onClick)="deletePagesConnections()"></p-button>
+        }
+      </aside>
+      }
+    </div>
     } @else if (activeTab === 'components') {
-      <div class="project-edit-flow-area">
-        <div class="project-edit-flow-wrapper">
-          <f-flow
-            #componentsFlow
-            fDraggable
-            (fSelectionChange)="onComponentsSelectionChange($event)"
-            (fCreateConnection)="onComponentsCreateConnection($event)"
-            (fReassignConnection)="onComponentsReassignConnection($event)"
-          >
-            <f-canvas>
-              <f-connection-for-create fType="bezier"></f-connection-for-create>
-              <f-snap-connection></f-snap-connection>
-              @for (conn of componentsConnections(); track conn.id) {
-                <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId" fType="bezier"></f-connection>
-              }
-              @for (node of componentsNodes(); track node.id) {
-                <div
-                  class="f-flow-node"
-                  fNode
-                  [fNodeId]="node.id"
-                  [fNodePosition]="{ x: node.x, y: node.y }"
-                  (fNodePositionChange)="onComponentsNodePositionChange(node.id, $event.x, $event.y)"
-                  fDragHandle
-                >
-                  <span fNodeOutput [fOutputId]="node.id + '-out'" fOutputConnectableSide="right"></span>
-                  <span fNodeInput [fInputId]="node.id + '-in'" fInputConnectableSide="left"></span>
-                  <span class="block font-medium text-gray-900">{{ node.name }}</span>
-                </div>
-              }
-            </f-canvas>
-          </f-flow>
-        </div>
-        @if (selectedComponentsNodeId()) {
-          <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-4">
-            <h3 class="mb-4 text-base font-bold text-gray-900">Edit node</h3>
-            <div class="mb-4 flex flex-col gap-3">
-              <label class="text-sm font-medium text-gray-700">Name</label>
-              <input type="text" [ngModel]="editingNodeName()" (ngModelChange)="editingNodeName.set($event)" pInputText class="w-full rounded-lg border-gray-200" />
-              <p-button label="Save" size="small" (onClick)="saveComponentsNodeName()"></p-button>
-            </div>
-            <hr class="mb-4 border-gray-200" />
-            <h4 class="mb-3 text-sm font-semibold text-gray-700">Liens</h4>
-            <div class="mb-4 flex flex-col gap-2">
-              <label class="text-sm font-medium text-gray-700">Ajouter un lien</label>
-              <p-select
-                [ngModel]="newConnectionTarget()"
-                (ngModelChange)="newConnectionTarget.set($event)"
-                [options]="componentsNodes()"
-                optionLabel="name"
-                optionValue="id"
-                placeholder="Sélectionner la cible"
-                class="w-full"
-                [style]="{ minWidth: '100%' }"
-              ></p-select>
-              <p-button
-                label="Ajouter"
-                size="small"
-                (onClick)="addComponentsConnection()"
-                [disabled]="!newConnectionTarget() || newConnectionTarget() === selectedComponentsNodeId()"
-              ></p-button>
-            </div>
-            <p class="mb-3 text-xs text-gray-500">Ou glissez-déposez depuis un output vers un input.</p>
-            <div class="mb-4 flex flex-col gap-2">
-              @for (conn of componentsConnectionsForNode(selectedComponentsNodeId()); track conn.id) {
-                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-                  <span class="text-gray-700">{{ getNodeName(conn.outputId, componentsNodes()) }} → {{ getNodeName(conn.inputId, componentsNodes()) }}</span>
-                  <button
-                    type="button"
-                    class="rounded p-1 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
-                    (click)="deleteConnectionById(conn.id, 'components')"
-                    aria-label="Supprimer le lien"
-                  >
-                    <i class="pi pi-trash text-xs"></i>
-                  </button>
-                </div>
-              } @empty {
-                <p class="text-sm text-gray-500">Aucun lien</p>
-              }
-            </div>
-            @if (selectedComponentsConnectionIds().length > 0) {
-              <p-button label="Supprimer la sélection (Delete)" severity="danger" size="small" (onClick)="deleteComponentsConnections()"></p-button>
+    <div class="grid h-full min-h-[400px] grid-cols-[1fr_auto] overflow-hidden">
+      <div class="h-full min-h-0 overflow-hidden [&_f-flow]:block [&_f-flow]:h-full [&_f-flow]:w-full">
+        <f-flow #componentsFlow fDraggable (fSelectionChange)="onComponentsSelectionChange($event)"
+          (fCreateConnection)="onComponentsCreateConnection($event)"
+          (fReassignConnection)="onComponentsReassignConnection($event)">
+          <f-background>
+            <f-rect-pattern [vSize]="24" [hSize]="24" vColor="rgba(0,0,0,0.07)" hColor="rgba(0,0,0,0.07)"></f-rect-pattern>
+          </f-background>
+          <f-canvas #componentsCanvas fZoom>
+            <f-connection-for-create fType="bezier"></f-connection-for-create>
+            <f-snap-connection></f-snap-connection>
+            @for (conn of componentsConnections(); track conn.id) {
+            <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId"
+              fType="bezier"></f-connection>
             }
-          </aside>
+            @for (node of componentsNodes(); track node.id) {
+            <div class="f-flow-node" fNode [fNodeId]="node.id" [fNodePosition]="{ x: node.x, y: node.y }"
+              (fNodePositionChange)="onComponentsNodePositionChange(node.id, $event.x, $event.y)">
+              <span class="flow-node-anchor flow-node-anchor-input" fNodeInput [fInputId]="node.id + '-in'" [fInputMultiple]="true" fInputConnectableSide="left"></span>
+              <div class="flow-node-drag-area" fDragHandle>
+                <span class="block font-medium text-gray-900">{{ node.name }}</span>
+              </div>
+              <span class="flow-node-anchor flow-node-anchor-output" fNodeOutput [fOutputId]="node.id + '-out'" [fOutputMultiple]="true" fOutputConnectableSide="right"></span>
+            </div>
+            }
+          </f-canvas>
+        </f-flow>
+      </div>
+      @if (selectedComponentsNodeId()) {
+      <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900">Modifier le nœud</h3>
+        <div class="mb-4 flex flex-col gap-3">
+          <label class="text-sm font-medium text-gray-700">Nom</label>
+          <input type="text" [ngModel]="editingNodeName()" (ngModelChange)="editingNodeName.set($event)" pInputText
+            class="w-full rounded-lg border-gray-200" />
+          <p-button label="Enregistrer" size="small" (onClick)="saveComponentsNodeName()"></p-button>
+        </div>
+        <hr class="mb-4 border-gray-200" />
+        <h4 class="mb-3 text-sm font-semibold text-gray-700">Liens</h4>
+        <div class="mb-4 flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700">Ajouter un lien</label>
+          <p-select [ngModel]="newConnectionTarget()" (ngModelChange)="newConnectionTarget.set($event)"
+            [options]="componentsNodes()" optionLabel="name" optionValue="id" placeholder="Sélectionner la cible"
+            class="w-full" [style]="{ minWidth: '100%' }"></p-select>
+          <p-button label="Ajouter" size="small" (onClick)="addComponentsConnection()"
+            [disabled]="!newConnectionTarget() || newConnectionTarget() === selectedComponentsNodeId()"></p-button>
+        </div>
+        <p class="mb-3 text-xs text-gray-500">Ou glissez-déposez depuis un output vers un input.</p>
+        <div class="mb-4 flex flex-col gap-2">
+          @for (conn of componentsConnectionsForNode(selectedComponentsNodeId()); track conn.id) {
+          <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            <span class="text-gray-700">{{ getNodeName(conn.outputId, componentsNodes()) }} → {{
+              getNodeName(conn.inputId, componentsNodes()) }}</span>
+            <button type="button" class="rounded p-1 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
+              (click)="deleteConnectionById(conn.id, 'components')" aria-label="Supprimer le lien">
+              <i class="pi pi-trash text-xs"></i>
+            </button>
+          </div>
+          } @empty {
+          <p class="text-sm text-gray-500">Aucun lien</p>
+          }
+        </div>
+        @if (selectedComponentsConnectionIds().length > 0) {
+        <p-button label="Supprimer la sélection (Delete)" severity="danger" size="small"
+          (onClick)="deleteComponentsConnections()"></p-button>
         }
-      </div>
+      </aside>
+      }
+    </div>
     } @else if (activeTab === 'data') {
-      <div class="rounded-xl border border-gray-200 bg-white p-8">
-        <p class="text-sm text-gray-500">Data schema and sample data for this project will appear here.</p>
-      </div>
+    <div class="rounded-xl border border-gray-200 bg-white p-8">
+      <p class="text-sm text-gray-500">Data schema and sample data for this project will appear here.</p>
+    </div>
     } @else if (activeTab === 'configuration') {
-      <div class="rounded-xl border border-gray-200 bg-white p-8">
-        <p class="text-sm text-gray-500">Global configuration for this project will appear here.</p>
-      </div>
+    <div class="rounded-xl border border-gray-200 bg-white p-8">
+      <p class="text-sm text-gray-500">Global configuration for this project will appear here.</p>
+    </div>
     }
   </section>
 </div>
 } @else {
-<div class="flex min-h-[50vh] w-full flex-col items-center justify-center gap-6 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-16 text-center">
+<div
+  class="flex min-h-[50vh] w-full flex-col items-center justify-center gap-6 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-16 text-center">
   <div class="rounded-full bg-red-100 p-4">
     <i class="pi pi-exclamation-triangle text-2xl text-red-600"></i>
   </div>
   <div>
-    <p class="font-semibold text-gray-900">Project not found</p>
+    <p class="font-semibold text-gray-900">Projet introuvable</p>
     <p class="mt-2 max-w-sm text-sm text-gray-500">
-      The project you are trying to edit no longer exists. It may have been removed from this browser.
+      Le projet que vous éditez n'existe plus. Il a peut-être été supprimé de ce navigateur.
     </p>
   </div>
-  <p-button label="Back to projects" (onClick)="goBackToProjects()" icon="pi pi-arrow-left" iconPos="left"></p-button>
+  <p-button label="Retour aux projets" (onClick)="goBackToProjects()" icon="pi pi-arrow-left" iconPos="left"></p-button>
 </div>
 }

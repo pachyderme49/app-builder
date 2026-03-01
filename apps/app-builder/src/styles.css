@@ -36,6 +36,138 @@
   box-shadow: 0 0 0 2px rgba(227, 79, 98, 0.2);
 }
 
+/* Foblex-style nodes (Building-AI-Low-Code-Platform5) */
+.f-flow-node.flow-node-foblex {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 10rem;
+  max-width: 20rem;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: rgba(227, 79, 98, 0.15);
+  color: #E34F62;
+  border-color: rgba(227, 79, 98, 0.3);
+  cursor: default;
+}
+
+.f-flow-node.flow-node-foblex .flow-node-drag-area {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+  cursor: grab;
+}
+
+.f-flow-node.flow-node-foblex .flow-node-drag-area:active {
+  cursor: grabbing;
+}
+
+.f-flow-node.flow-node-foblex .flow-node-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.f-flow-node.flow-node-foblex .flow-node-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  text-align: left;
+}
+
+.f-flow-node.flow-node-foblex .flow-node-remove {
+  margin-left: auto;
+  display: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.f-flow-node.flow-node-foblex .flow-node-remove:hover {
+  color: #dc2626;
+}
+
+.f-flow-node.flow-node-foblex.f-selected .flow-node-remove {
+  display: flex;
+}
+
+/* Ancres : centre sur la bordure du node (moitié dedans, moitié dehors) */
+.f-flow-node .flow-node-anchor {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--node-background-color);
+  border: 2px solid var(--node-border-color);
+  cursor: crosshair;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-flow-node .flow-node-anchor:hover {
+  border-color: var(--node-selected-border-color);
+  background: rgba(227, 79, 98, 0.15);
+  transform: translateY(-50%) scale(1.15);
+}
+
+/* Centre de l'ancrage sur la bordure : left/right 0 + translateX(±50%) */
+.f-flow-node.flow-node-foblex .flow-node-anchor-input {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.f-flow-node.flow-node-foblex .flow-node-anchor-input:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.f-flow-node.flow-node-foblex .flow-node-anchor-output {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.f-flow-node.flow-node-foblex .flow-node-anchor-output:hover {
+  transform: translate(50%, -50%) scale(1.15);
+}
+
+.f-flow-node:not(.flow-node-foblex) .flow-node-anchor-input {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.f-flow-node:not(.flow-node-foblex) .flow-node-anchor-input:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.f-flow-node:not(.flow-node-foblex) .flow-node-anchor-output {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.f-flow-node:not(.flow-node-foblex) .flow-node-anchor-output:hover {
+  transform: translate(50%, -50%) scale(1.15);
+}
+
 .f-flow-node .f-node-input,
 .f-flow-node .f-node-output {
   position: absolute;
@@ -60,14 +192,27 @@
   transform: translateY(-50%);
 }
 
+/* Flèche à la fin des connexions (remplace le rond) */
 .f-flow .f-connection-path {
   fill: none;
   stroke: var(--connection-color);
   stroke-width: var(--connection-path-stroke);
+  marker-end: url(#flow-arrow-marker);
 }
 
 .f-flow .f-connection.f-selected .f-connection-path {
   stroke: var(--node-selected-border-color);
+  marker-end: url(#flow-arrow-marker);
+}
+
+/* Masquer les cercles de drag des connexions, utiliser la flèche */
+.f-flow .f-connection-drag-handle {
+  fill: transparent !important;
+}
+
+body.resizing-panel {
+  cursor: col-resize;
+  user-select: none;
 }
 
 /* TailAdmin base styles */

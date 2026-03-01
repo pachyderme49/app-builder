@@ -4,7 +4,9 @@ import {
   HostListener,
   inject,
   OnInit,
+  AfterViewInit,
   signal,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TabsModule } from 'primeng/tabs';
 import {
+  FCanvasComponent,
   FFlowModule,
   FCreateConnectionEvent,
   FCreateNodeEvent,
@@ -28,13 +31,26 @@ interface Project {
   createdAt: string;
 }
 
+export type PageType = 'formulaire' | 'connexion' | 'liste';
+
 export interface FlowNode {
   id: string;
   name: string;
   x: number;
   y: number;
-  type?: string;
+  type?: PageType;
   modules?: string[];
+}
+
+export interface PagePrefaite {
+  id: string;
+  name: string;
+  type: PageType;
+}
+
+export interface ModuleItem {
+  id: string;
+  name: string;
 }
 
 export interface FlowConnection {
@@ -43,24 +59,16 @@ export interface FlowConnection {
   inputId: string;
 }
 
-export interface PagePrefaite {
-  id: string;
-  name: string;
-  type: string;
-}
-
-export interface ModuleItem {
-  id: string;
-  name: string;
-}
 
 const PAGES_PREFAITES: PagePrefaite[] = [
   { id: 'formulaire', name: 'Formulaire', type: 'formulaire' },
   { id: 'connexion', name: 'Connexion', type: 'connexion' },
+  { id: 'liste', name: 'Liste', type: 'liste' },
 ];
 
 const MODULES: ModuleItem[] = [
-  { id: 'champs', name: 'Champs' },
+  { id: 'formulaire', name: 'Formulaire' },
+  { id: 'input', name: 'Input' },
   { id: 'bouton', name: 'Bouton' },
   { id: 'tableau', name: 'Tableau' },
 ];
@@ -78,10 +86,10 @@ const STORAGE_KEY = 'app-builder:projects';
 type ProjectTab = 'pages' | 'components' | 'data' | 'configuration';
 
 const DEFAULT_PAGES_NODES: FlowNode[] = [
-  { id: 'auth', name: 'auth', x: 0, y: 0 },
-  { id: 'home', name: 'home', x: 220, y: 0 },
-  { id: 'contact', name: 'Contact', x: 440, y: 120 },
-  { id: 'products', name: 'Products', x: 440, y: -120 },
+  { id: 'auth', name: 'auth', x: 0, y: 0, type: 'connexion', modules: [] },
+  { id: 'home', name: 'home', x: 220, y: 0, type: 'liste', modules: [] },
+  { id: 'contact', name: 'Contact', x: 440, y: 120, type: 'formulaire', modules: [] },
+  { id: 'products', name: 'Products', x: 440, y: -120, type: 'liste', modules: [] },
 ];
 
 const DEFAULT_PAGES_CONNECTIONS: FlowConnection[] = [
@@ -103,16 +111,21 @@ const DEFAULT_PAGES_CONNECTIONS: FlowConnection[] = [
     FFlowModule,
   ],
   templateUrl: './project-edit-page.html',
-  styleUrl: './project-edit-page.css',
 })
-export class ProjectEditPage implements OnInit {
+export class ProjectEditPage implements OnInit, AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   project: Project | null = null;
   isEditingName = false;
   editedName = '';
-  activeTab: ProjectTab = 'pages';
+  private _activeTabSignal = signal<ProjectTab>('pages');
+  get activeTab(): ProjectTab {
+    return this._activeTabSignal();
+  }
+  set activeTab(v: ProjectTab) {
+    this._activeTabSignal.set(v);
+  }
 
   pagesNodes = signal<FlowNode[]>(DEFAULT_PAGES_NODES);
   pagesConnections = signal<FlowConnection[]>(DEFAULT_PAGES_CONNECTIONS);
@@ -128,7 +141,9 @@ export class ProjectEditPage implements OnInit {
   newConnectionTarget = signal<string | null>(null);
 
   private readonly pagesFlowRef = viewChild<FFlowComponent>('pagesFlow');
+  private readonly pagesCanvasRef = viewChild<FCanvasComponent>('pagesCanvas');
   private readonly componentsFlowRef = viewChild<FFlowComponent>('componentsFlow');
+  private readonly componentsCanvasRef = viewChild<FCanvasComponent>('componentsCanvas');
 
   pagesPanelCollapsed = signal(false);
   pagesPanelWidth = signal(260);
@@ -137,6 +152,19 @@ export class ProjectEditPage implements OnInit {
   private resizeStartWidth = 0;
   readonly PAGES_PREFAITES = PAGES_PREFAITES;
   readonly MODULES = MODULES;
+
+  getNodeIcon(node: FlowNode): string {
+    return this.getPageTypeIcon(node.type);
+  }
+
+  getPageTypeIcon(type?: PageType | string): string {
+    const map: Record<string, string> = {
+      formulaire: 'pi-file-edit',
+      connexion: 'pi-sign-in',
+      liste: 'pi-list',
+    };
+    return map[type ?? ''] ?? 'pi-file';
+  }
 
   get hasProject(): boolean {
     return !!this.project;
@@ -166,6 +194,16 @@ export class ProjectEditPage implements OnInit {
     this.project = project;
     this.editedName = project.name;
   }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.pagesCanvasRef()?.resetScaleAndCenter(false));
+  }
+
+  private _centerOnTabChange = effect(() => {
+    if (this._activeTabSignal() === 'components') {
+      setTimeout(() => this.componentsCanvasRef()?.resetScaleAndCenter(false), 50);
+    }
+  });
 
   startEditName(): void {
     if (!this.project) {
@@ -448,15 +486,16 @@ export class ProjectEditPage implements OnInit {
     const targetNodeId = event.fTargetNode;
 
     if (isModule && targetNodeId) {
-      this.addModuleToPage(targetNodeId, data.name);
+      this.addModuleToPage(targetNodeId, data?.name ?? '');
       return;
     }
 
     const name = data?.name ?? 'Page';
+    const type = (data?.type as PageType) ?? 'formulaire';
     const id = generateId();
     const x = event.rect?.x ?? 0;
     const y = event.rect?.y ?? 0;
-    const newNode: FlowNode = { id, name, x, y, type: data?.type, modules: [] };
+    const newNode: FlowNode = { id, name, x, y, type, modules: [] };
 
     this.pagesNodes.update((nodes) => [...nodes, newNode]);
   }
@@ -469,6 +508,19 @@ export class ProjectEditPage implements OnInit {
         return { ...n, modules };
       })
     );
+  }
+
+  deletePagesNode(nodeId: string): void {
+    this.pagesNodes.update((nodes) => nodes.filter((n) => n.id !== nodeId));
+    const outId = nodeId + '-out';
+    const inId = nodeId + '-in';
+    this.pagesConnections.update((conns) =>
+      conns.filter((c) => c.outputId !== outId && c.inputId !== inId)
+    );
+    if (this.selectedPagesNodeId() === nodeId) {
+      this.selectedPagesNodeId.set(null);
+    }
+    this.pagesFlowRef()?.clearSelection();
   }
 
   onComponentsNodePositionChange(nodeId: string, x: number, y: number): void {

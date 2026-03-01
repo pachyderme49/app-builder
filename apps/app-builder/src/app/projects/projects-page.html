@@ -8,26 +8,13 @@
     </div>
   </header>
 
-  <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-card">
-    <form class="flex flex-col gap-4 sm:flex-row sm:items-end" (ngSubmit)="addProject()">
-      <label class="flex-1">
-        <span class="mb-2 block text-sm font-medium text-gray-700">Project name</span>
-        <input
-          type="text"
-          name="projectName"
-          [(ngModel)]="newProjectName"
-          placeholder="Enter a project name"
-          pInputText
-          class="w-full rounded-lg border-gray-200"
-        />
-      </label>
-      <p-button
-        type="submit"
-        label="Add project"
-        [disabled]="!newProjectName.trim()"
-      ></p-button>
-    </form>
-  </section>
+  <form class="flex flex-col gap-4 sm:flex-row sm:items-end" (ngSubmit)="addProject()">
+    <label class="flex-1">
+      <input type="text" name="projectName" [(ngModel)]="newProjectName" placeholder="Enter a project name" pInputText
+        class="w-full rounded-lg border-gray-200" />
+    </label>
+    <p-button type="submit" label="Add project" [disabled]="!newProjectName.trim()"></p-button>
+  </form>
 
   <section class="space-y-4">
     <div class="flex items-center justify-between gap-2">
@@ -40,39 +27,37 @@
     </div>
 
     @if (hasProjects) {
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        @for (project of projects; track project.id) {
-          <div
-            class="cursor-pointer rounded-xl border border-gray-200 bg-white p-6 shadow-card transition-all hover:border-brand-200 hover:shadow-default"
-            (click)="openProject(project.id)"
-          >
-            <div class="flex items-start justify-between">
-              <div class="flex-1 min-w-0">
-                <h3 class="truncate text-lg font-semibold text-gray-900">{{ project.name }}</h3>
-                <p class="mt-1 text-xs text-gray-500">
-                  Created {{ project.createdAt | date:'short' }}
-                </p>
-              </div>
-              <i class="pi pi-chevron-right ml-2 shrink-0 text-gray-400"></i>
-            </div>
-          </div>
-        }
-      </div>
-    } @else {
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      @for (project of projects; track project.id) {
       <div
-        class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center"
-      >
-        <div class="rounded-full bg-brand-100 p-4">
-          <i class="pi pi-folder-open text-2xl text-brand-600"></i>
-        </div>
-        <div>
-          <p class="font-medium text-gray-700">No projects yet</p>
-          <p class="mt-1 max-w-sm text-sm text-gray-500">
-            Start by creating your first project using the form above. Your projects are stored
-            locally in this browser.
-          </p>
+        class="cursor-pointer rounded-xl border border-gray-200 bg-white p-6 shadow-card transition-all hover:border-brand-200 hover:shadow-default"
+        (click)="openProject(project.id)">
+        <div class="flex items-start justify-between">
+          <div class="flex-1 min-w-0">
+            <h3 class="truncate text-lg font-semibold text-gray-900">{{ project.name }}</h3>
+            <p class="mt-1 text-xs text-gray-500">
+              Created {{ project.createdAt | date:'short' }}
+            </p>
+          </div>
+          <i class="pi pi-chevron-right ml-2 shrink-0 text-gray-400"></i>
         </div>
       </div>
+      }
+    </div>
+    } @else {
+    <div
+      class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center">
+      <div class="rounded-full bg-brand-100 p-4">
+        <i class="pi pi-folder-open text-2xl text-brand-600"></i>
+      </div>
+      <div>
+        <p class="font-medium text-gray-700">No projects yet</p>
+        <p class="mt-1 max-w-sm text-sm text-gray-500">
+          Start by creating your first project using the form above. Your projects are stored
+          locally in this browser.
+        </p>
+      </div>
+    </div>
     }
   </section>
 </div>

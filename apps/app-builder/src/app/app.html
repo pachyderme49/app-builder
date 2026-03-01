@@ -77,16 +77,23 @@
                 <div class="flex items-center gap-2">
                     <button type="button" class="hidden rounded-lg p-2 hover:bg-gray-100 xl:block"
                         (click)="panelOpen.set(!panelOpen())"
-                        [attr.aria-label]="panelOpen() ? 'Replier le panneau' : 'Afficher le panneau'"
+                        [attr.aria-label]="panelOpen() ? 'Replier le panneau' : 'Ouvrir le panneau'"
                         [attr.aria-expanded]="panelOpen()">
-                        <i class="pi text-gray-600 transition-transform duration-300"
-                            [class.pi-chevron-left]="!panelOpen()" [class.pi-chevron-right]="panelOpen()"></i>
+                        <i class="pi text-lg text-gray-600 transition-transform duration-300"
+                            [class.pi-angle-double-right]="!panelOpen()" [class.pi-chevron-left]="panelOpen()"></i>
                     </button>
+                    @if (!panelOpen()) {
+                    <button type="button" class="rounded-full p-0.5 transition-colors hover:ring-2 hover:ring-brand-200"
+                        aria-label="Profil utilisateur">
+                        <p-avatar image="https://ui-avatars.com/api/?name=User&size=72&background=FB7A6B&color=fff"
+                            shape="circle" size="normal" styleClass="h-9 w-9" />
+                    </button>
+                    }
                 </div>
             </header>
 
             <main class="flex-1 overflow-y-auto bg-white">
-                <div class="mx-auto max-w-screen-xl p-4 md:p-6 2xl:p-8">
+                <div class="mx-auto p-4 md:p-6 2xl:p-8">
                     <router-outlet></router-outlet>
                 </div>
             </main>
