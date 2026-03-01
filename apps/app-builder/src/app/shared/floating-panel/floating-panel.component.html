@@ -1,0 +1,26 @@
+@if (visible()) {
+<aside [class]="
+    variant() === 'right'
+      ? 'flex h-full min-h-0 flex-1 flex-col overflow-y-auto px-5 py-5 shadow-panel-left'
+      : 'flex max-h-[calc(100vh-6rem)] w-[300px] shrink-0 flex-col overflow-y-auto bg-gradient-to-br from-[#FAF4F0] to-[#F9F5F0] p-5'
+  " role="complementary" aria-label="Panneau latéral">
+  <div class="mb-4 flex items-center justify-between pb-3">
+    <div class="ml-auto flex items-center gap-2">
+      <p-button icon="pi pi-comments" [rounded]="true" [text]="true" [raised]="true" severity="secondary"
+        styleClass="bg-white">
+      </p-button>
+      <p-button icon="pi pi-bell" [rounded]="true" [text]="true" [raised]="true" severity="secondary"
+        styleClass="bg-white">
+      </p-button>
+      <p-avatar image="https://ui-avatars.com/api/?name=User&size=72&background=FB7A6B&color=fff" shape="circle"
+        size="normal" styleClass="h-9 w-9" />
+    </div>
+  </div>
+  <div class="flex min-h-0 flex-1 flex-col gap-4">
+    @if (title()) {
+    <h3 class="text-[0.9375rem] font-semibold text-white">{{ title() }}</h3>
+    }
+    <ng-content></ng-content>
+  </div>
+</aside>
+}

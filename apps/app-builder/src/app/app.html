@@ -1,76 +1,116 @@
-<div class="flex h-screen overflow-hidden bg-gray-50">
-  <!-- Sidebar -->
-  <aside
-    class="fixed inset-y-0 left-0 z-50 flex w-72 shrink-0 flex-col border-r border-gray-200 bg-white shadow-default lg:static lg:translate-x-0"
-    [class.-translate-x-full]="!sidebarOpen()"
-    [class.translate-x-0]="sidebarOpen()"
-  >
-    <div class="flex h-16 items-center justify-between border-b border-gray-200 px-6">
-      <a routerLink="/projects" class="flex items-center gap-2">
-        <span class="text-xl font-bold text-brand-600">App Builder</span>
-      </a>
-      <button
-        type="button"
-        class="block rounded p-2 hover:bg-gray-100 lg:hidden"
-        (click)="sidebarOpen.set(!sidebarOpen())"
-        aria-label="Toggle sidebar"
-      >
-        <i class="pi pi-bars text-gray-600"></i>
-      </button>
+<div class="flex h-screen overflow-hidden bg-gradient-to-b from-[#E34F62] to-[#FB7A6B]">
+    <!-- Sidebar style Planti : expandable / miniature (icônes seules) -->
+    <aside
+        class="fixed inset-y-0 left-0 z-50 flex shrink-0 flex-col border-r border-gray-200/60 bg-white transition-[width] duration-300 ease-out lg:static lg:translate-x-0"
+        [class.w-16]="sidebarCollapsed()" [class.w-72]="!sidebarCollapsed()" [class.-translate-x-full]="!sidebarOpen()"
+        [class.translate-x-0]="sidebarOpen()">
+        <div class="flex items-center gap-4 overflow-hidden px-4 py-5 lg:px-6"
+            [class.justify-center]="sidebarCollapsed()">
+            <div
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-white">
+                <i class="pi pi-th-large text-lg"></i>
+            </div>
+            @if (!sidebarCollapsed()) {
+            <div class="min-w-0 flex-1">
+                <p class="truncate font-semibold text-gray-900">App Builder</p>
+                <p class="truncate text-xs text-gray-500">• En ligne</p>
+            </div>
+            <button type="button" class="rounded-lg p-2 hover:bg-gray-200/80 lg:hidden" (click)="sidebarOpen.set(false)"
+                aria-label="Fermer le menu">
+                <i class="pi pi-bars text-gray-600"></i>
+            </button>
+            }
+        </div>
+
+        <nav class="flex-1 overflow-y-auto px-3 py-6 lg:px-4">
+            <div class="space-y-6">
+                <div>
+                    @if (!sidebarCollapsed()) {
+                    <h3 class="mb-3 px-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                        Projets &amp; Tâches
+                    </h3>
+                    }
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a routerLink="/projects"
+                                routerLinkActive="border-l-brand-600 bg-brand-50/80 font-medium text-brand-700"
+                                [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
+                                [class.justify-center]="sidebarCollapsed()" [class.px-3]="sidebarCollapsed()"
+                                class="group flex items-center gap-3 border-l-2 border-transparent py-2.5 pl-4 pr-3 text-gray-700 transition-colors hover:bg-gray-200/50 hover:text-gray-900">
+                                <i
+                                    class="pi pi-folder shrink-0 text-gray-500 group-[.router-link-active]:text-brand-600"></i>
+                                @if (!sidebarCollapsed()) {
+                                <span>Projects</span>
+                                }
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Bouton pour replier / déplier le menu -->
+        <div class="border-t border-gray-200/60 p-3">
+            <button type="button"
+                class="flex w-full items-center justify-center rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                (click)="sidebarCollapsed.set(!sidebarCollapsed())"
+                [attr.aria-label]="sidebarCollapsed() ? 'Ouvrir le menu' : 'Replier le menu'"
+                [attr.aria-expanded]="!sidebarCollapsed()">
+                <i class="pi text-lg transition-transform duration-300" [class.pi-chevron-left]="!sidebarCollapsed()"
+                    [class.pi-chevron-right]="sidebarCollapsed()"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Overlay mobile -->
+    <div class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+        [class.invisible]="!sidebarOpen()" [class.opacity-0]="!sidebarOpen()"
+        [class.pointer-events-none]="!sidebarOpen()" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+
+    <!-- Zone centrale : header + contenu | espace | panel -->
+    <div class="relative flex flex-1 min-w-0 transition-[gap] duration-300">
+        <!-- Main : header (coin arrondi à droite) + contenu blanc -->
+        <div class="flex min-w-0 flex-1 flex-col overflow-hidden"
+            [ngClass]="{'rounded-tr-[25px] rounded-br-[25px] shadow-[0_8px_30px_rgb(0,0,0,0.12)]': panelOpen()}">
+            <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between bg-white px-4 md:px-6">
+                <div class="flex-1"></div>
+                <div class="flex items-center gap-2">
+                    <button type="button" class="hidden rounded-lg p-2 hover:bg-gray-100 xl:block"
+                        (click)="panelOpen.set(!panelOpen())"
+                        [attr.aria-label]="panelOpen() ? 'Replier le panneau' : 'Afficher le panneau'"
+                        [attr.aria-expanded]="panelOpen()">
+                        <i class="pi text-gray-600 transition-transform duration-300"
+                            [class.pi-chevron-left]="!panelOpen()" [class.pi-chevron-right]="panelOpen()"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto bg-white">
+                <div class="mx-auto max-w-screen-xl p-4 md:p-6 2xl:p-8">
+                    <router-outlet></router-outlet>
+                </div>
+            </main>
+        </div>
+
+        <!-- Panel animé (largeur + espace) -->
+        <div class="hidden shrink-0 overflow-hidden transition-[width] duration-300 ease-in-out xl:block"
+            [class.w-0]="!panelOpen()" [class.min-w-0]="!panelOpen()" [class.w-80]="panelOpen()">
+            <app-floating-panel [title]="'Aperçu'" [variant]="'right'" [visible]="panelOpen()">
+                <div class="space-y-3">
+                    <div class="rounded-xl bg-amber-50/90 px-4 py-3">
+                        <p class="text-2xl font-bold text-amber-800">0</p>
+                        <p class="text-xs font-medium text-amber-700">Projets actifs</p>
+                    </div>
+                    <div class="rounded-xl bg-purple-50/90 px-4 py-3">
+                        <p class="text-2xl font-bold text-purple-800">0</p>
+                        <p class="text-xs font-medium text-purple-700">Pages</p>
+                    </div>
+                    <div class="rounded-xl bg-teal-50/90 px-4 py-3">
+                        <p class="text-2xl font-bold text-teal-800">0</p>
+                        <p class="text-xs font-medium text-teal-700">Composants</p>
+                    </div>
+                </div>
+            </app-floating-panel>
+        </div>
     </div>
-    <nav class="flex-1 overflow-y-auto px-4 py-4">
-      <div>
-        <h3 class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          Menu
-        </h3>
-        <ul class="space-y-1">
-          <li>
-            <a
-              routerLink="/projects"
-              routerLinkActive="bg-brand-50 text-brand-600 font-medium"
-              [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
-              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-body-dark transition-colors hover:bg-gray-100"
-            >
-              <i class="pi pi-folder text-gray-500 group-[.router-link-active]:text-brand-600"></i>
-              <span>Projects</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </aside>
-
-  <!-- Overlay for mobile -->
-  <div
-    class="fixed inset-0 z-40 bg-black/50 lg:hidden"
-    [class.hidden]="!sidebarOpen()"
-    (click)="sidebarOpen.set(false)"
-    aria-hidden="true"
-  ></div>
-
-  <!-- Content area -->
-  <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-    <!-- Header -->
-    <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm md:px-6">
-      <button
-        type="button"
-        class="hidden rounded p-2 hover:bg-gray-100 lg:block"
-        (click)="sidebarOpen.set(!sidebarOpen())"
-        aria-label="Toggle sidebar"
-      >
-        <i class="pi pi-bars text-gray-600"></i>
-      </button>
-      <div class="flex-1"></div>
-      <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-500">Dashboard</span>
-      </div>
-    </header>
-
-    <!-- Main content -->
-    <main class="flex-1">
-      <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-8">
-        <router-outlet></router-outlet>
-      </div>
-    </main>
-  </div>
 </div>

@@ -3,11 +3,11 @@
 /* TailAdmin-style Foblex Flow baseline styles */
 :root {
   --background-element-color: rgba(0, 0, 0, 0.06);
-  --selection-area-color: rgba(70, 95, 255, 0.12);
+  --selection-area-color: rgba(227, 79, 98, 0.12);
   --node-background-color: #ffffff;
   --node-border-radius: 0.5rem;
   --node-border-color: rgb(229 231 235);
-  --node-selected-border-color: #3641f5;
+  --node-selected-border-color: #E34F62;
   --node-color: rgb(55 65 81);
   --node-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06);
   --connection-color: rgb(107 114 128);
@@ -33,7 +33,7 @@
 
 .f-flow-node.f-selected {
   border-color: var(--node-selected-border-color);
-  box-shadow: 0 0 0 2px rgba(52, 81, 178, 0.2);
+  box-shadow: 0 0 0 2px rgba(227, 79, 98, 0.2);
 }
 
 .f-flow-node .f-node-input,
