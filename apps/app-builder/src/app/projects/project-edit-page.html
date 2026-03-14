@@ -29,13 +29,14 @@
       </div>
     </div>
     <div class="flex items-center gap-2 self-end">
+      <p-button label="Build" aria-label="Build project" (onClick)="buildProject()"></p-button>
       <p-button label="⋯" variant="text" aria-label="Project menu" (onClick)="deleteProject()"
         styleClass="text-gray-600 hover:bg-gray-100"></p-button>
     </div>
   </header>
 
   <!-- Onglets dans une carte style projet -->
-  <section class="min-h-12 rounded-t-xl border border-b-0 border-gray-200 bg-white shadow-card">
+  <section class="min-h-12">
     <p-tabs [(value)]="activeTab">
       <p-tablist>
         <p-tab value="pages">Pages</p-tab>
@@ -47,7 +48,7 @@
   </section>
 
   <!-- Contenu principal : carte blanche arrondie -->
-  <section class="min-h-0 overflow-hidden rounded-b-xl border border-gray-200 bg-white shadow-card">
+  <section class="min-h-0 overflow-hidden">
     @if (activeTab === 'pages') {
     <div class="grid h-full min-h-[400px] grid-cols-[auto_1fr_auto] overflow-hidden">
       @if (pagesPanelCollapsed()) {
@@ -119,15 +120,18 @@
           (fCreateNode)="onCreatePageNode($event)" (fCreateConnection)="onPagesCreateConnection($event)"
           (fReassignConnection)="onPagesReassignConnection($event)">
           <f-background>
-            <f-rect-pattern [vSize]="24" [hSize]="24" vColor="rgba(0,0,0,0.07)" hColor="rgba(0,0,0,0.07)"></f-rect-pattern>
+            <f-rect-pattern [vSize]="24" [hSize]="24" vColor="rgba(0,0,0,0.07)"
+              hColor="rgba(0,0,0,0.07)"></f-rect-pattern>
           </f-background>
           <f-canvas #pagesCanvas fZoom>
             <f-connection-for-create fType="bezier"></f-connection-for-create>
             <f-snap-connection></f-snap-connection>
             @for (node of pagesNodes(); track node.id) {
-            <div class="f-flow-node flow-node-foblex" fNode [fNodeId]="node.id" [fNodePosition]="{ x: node.x, y: node.y }"
+            <div class="f-flow-node flow-node-foblex" fNode [fNodeId]="node.id"
+              [fNodePosition]="{ x: node.x, y: node.y }"
               (fNodePositionChange)="onPagesNodePositionChange(node.id, $event.x, $event.y)">
-              <span class="flow-node-anchor flow-node-anchor-input" fNodeInput [fInputId]="node.id + '-in'" [fInputMultiple]="true" fInputConnectableSide="left"></span>
+              <span class="flow-node-anchor flow-node-anchor-input" fNodeInput [fInputId]="node.id + '-in'"
+                [fInputMultiple]="true" fInputConnectableSide="left"></span>
               <div class="flow-node-drag-area" fDragHandle>
                 <div class="flex min-w-0 flex-1 items-center gap-2">
                   <i class="pi {{ getNodeIcon(node) }} flow-node-icon"></i>
@@ -141,11 +145,12 @@
                 </div>
                 }
               </div>
-              <button type="button" class="flow-node-remove" (click)="deletePagesNode(node.id); $event.stopPropagation()"
-                aria-label="Supprimer">
+              <button type="button" class="flow-node-remove"
+                (click)="deletePagesNode(node.id); $event.stopPropagation()" aria-label="Supprimer">
                 <i class="pi pi-times"></i>
               </button>
-              <span class="flow-node-anchor flow-node-anchor-output" fNodeOutput [fOutputId]="node.id + '-out'" [fOutputMultiple]="true" fOutputConnectableSide="right"></span>
+              <span class="flow-node-anchor flow-node-anchor-output" fNodeOutput [fOutputId]="node.id + '-out'"
+                [fOutputMultiple]="true" fOutputConnectableSide="right"></span>
             </div>
             }
             @for (conn of pagesConnections(); track conn.id) {
@@ -198,32 +203,46 @@
     </div>
     } @else if (activeTab === 'components') {
     <div class="grid h-full min-h-[400px] grid-cols-[1fr_auto] overflow-hidden">
-      <div class="h-full min-h-0 overflow-hidden [&_f-flow]:block [&_f-flow]:h-full [&_f-flow]:w-full">
-        <f-flow #componentsFlow fDraggable (fSelectionChange)="onComponentsSelectionChange($event)"
-          (fCreateConnection)="onComponentsCreateConnection($event)"
-          (fReassignConnection)="onComponentsReassignConnection($event)">
-          <f-background>
-            <f-rect-pattern [vSize]="24" [hSize]="24" vColor="rgba(0,0,0,0.07)" hColor="rgba(0,0,0,0.07)"></f-rect-pattern>
-          </f-background>
-          <f-canvas #componentsCanvas fZoom>
-            <f-connection-for-create fType="bezier"></f-connection-for-create>
-            <f-snap-connection></f-snap-connection>
-            @for (conn of componentsConnections(); track conn.id) {
-            <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId"
-              fType="bezier"></f-connection>
-            }
-            @for (node of componentsNodes(); track node.id) {
-            <div class="f-flow-node" fNode [fNodeId]="node.id" [fNodePosition]="{ x: node.x, y: node.y }"
-              (fNodePositionChange)="onComponentsNodePositionChange(node.id, $event.x, $event.y)">
-              <span class="flow-node-anchor flow-node-anchor-input" fNodeInput [fInputId]="node.id + '-in'" [fInputMultiple]="true" fInputConnectableSide="left"></span>
-              <div class="flow-node-drag-area" fDragHandle>
-                <span class="block font-medium text-gray-900">{{ node.name }}</span>
+      <div class="flex h-full flex-col gap-2 overflow-hidden">
+        <div class="flex shrink-0 items-center gap-2 border-b border-gray-200 bg-white px-4 py-2">
+          <label class="text-sm font-medium text-gray-700">Page</label>
+          <p-select [ngModel]="selectedPageIdForComponents()" (ngModelChange)="selectedPageIdForComponents.set($event)"
+            [options]="pagesForSelect()" optionLabel="name" optionValue="id" placeholder="Choisir une page"
+            class="w-48" [style]="{ minWidth: '12rem' }"></p-select>
+        </div>
+        <div class="h-full min-h-0 overflow-hidden [&_f-flow]:block [&_f-flow]:h-full [&_f-flow]:w-full">
+          <f-flow #componentsFlow fDraggable (fSelectionChange)="onComponentsSelectionChange($event)"
+            (fCreateConnection)="onComponentsCreateConnection($event)"
+            (fReassignConnection)="onComponentsReassignConnection($event)">
+            <f-background>
+              <f-rect-pattern [vSize]="24" [hSize]="24" vColor="rgba(0,0,0,0.07)"
+                hColor="rgba(0,0,0,0.07)"></f-rect-pattern>
+            </f-background>
+            <f-canvas #componentsCanvas fZoom>
+              <f-connection-for-create fType="bezier"></f-connection-for-create>
+              <f-snap-connection></f-snap-connection>
+              @for (conn of componentsConnections(); track conn.id) {
+              <f-connection [fConnectionId]="conn.id" [fOutputId]="conn.outputId" [fInputId]="conn.inputId"
+                fType="bezier"></f-connection>
+              }
+              @for (node of componentsNodes(); track node.id) {
+              <div class="f-flow-node flow-node-foblex" fNode [fNodeId]="node.id" [fNodePosition]="{ x: node.x, y: node.y }"
+                (fNodePositionChange)="onComponentsNodePositionChange(node.id, $event.x, $event.y)">
+                <span class="flow-node-anchor flow-node-anchor-input" fNodeInput [fInputId]="node.id + '-in'"
+                  [fInputMultiple]="true" fInputConnectableSide="left"></span>
+                <div class="flow-node-drag-area" fDragHandle>
+                  <div class="flex min-w-0 flex-1 items-center gap-2">
+                    <i class="pi {{ getModuleIcon(node.type) }} flow-node-icon"></i>
+                    <span class="flow-node-name">{{ node.name }}</span>
+                  </div>
+                </div>
+                <span class="flow-node-anchor flow-node-anchor-output" fNodeOutput [fOutputId]="node.id + '-out'"
+                  [fOutputMultiple]="true" fOutputConnectableSide="right"></span>
               </div>
-              <span class="flow-node-anchor flow-node-anchor-output" fNodeOutput [fOutputId]="node.id + '-out'" [fOutputMultiple]="true" fOutputConnectableSide="right"></span>
-            </div>
-            }
-          </f-canvas>
-        </f-flow>
+              }
+            </f-canvas>
+          </f-flow>
+        </div>
       </div>
       @if (selectedComponentsNodeId()) {
       <aside class="flex h-full w-72 shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white p-6">

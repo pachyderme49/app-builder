@@ -93,7 +93,7 @@
             </header>
 
             <main class="flex-1 overflow-y-auto bg-white">
-                <div class="mx-auto p-4 md:p-6 2xl:p-8">
+                <div class="mx-auto p-4 md:p-6 2xl:p-8 pt-0 md:pt-0 2xl:pt-0">
                     <router-outlet></router-outlet>
                 </div>
             </main>
@@ -103,7 +103,7 @@
         <div class="hidden shrink-0 overflow-hidden transition-[width] duration-300 ease-in-out xl:block"
             [class.w-0]="!panelOpen()" [class.min-w-0]="!panelOpen()" [class.w-80]="panelOpen()">
             <app-floating-panel [title]="'Aperçu'" [variant]="'right'" [visible]="panelOpen()">
-                <div class="space-y-3">
+                <!-- <div class="space-y-3">
                     <div class="rounded-xl bg-amber-50/90 px-4 py-3">
                         <p class="text-2xl font-bold text-amber-800">0</p>
                         <p class="text-xs font-medium text-amber-700">Projets actifs</p>
@@ -116,7 +116,8 @@
                         <p class="text-2xl font-bold text-teal-800">0</p>
                         <p class="text-xs font-medium text-teal-700">Composants</p>
                     </div>
-                </div>
+                </div> -->
+                <iframe id="preview-iframe" class="w-full h-full" frameborder="0"></iframe>
             </app-floating-panel>
         </div>
     </div>

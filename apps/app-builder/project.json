@@ -48,6 +48,12 @@
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "options": {
+        "headers": {
+          "Cross-Origin-Opener-Policy": "same-origin",
+          "Cross-Origin-Embedder-Policy": "credentialless"
+        }
+      },
       "configurations": {
         "production": {
           "buildTarget": "app-builder:build:production"

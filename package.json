@@ -19,6 +19,7 @@
     "@angular/ssr": "21.1.1",
     "@foblex/flow": "^18.1.2",
     "@primeng/themes": "^21.0.4",
+    "@webcontainer/api": "^1.6.1",
     "express": "^4.21.2",
     "primeicons": "^7.0.0",
     "primeng": "^21.1.1",

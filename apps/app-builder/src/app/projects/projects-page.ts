@@ -5,12 +5,9 @@ import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-
-interface Project {
-  id: string;
-  name: string;
-  createdAt: string;
-}
+import type { Project } from '../models';
+import { createGuid } from '../models/id.util';
+import { createDefaultPagesAndLinks } from '../models/mock-data';
 
 const STORAGE_KEY = 'app-builder:projects';
 
@@ -40,10 +37,14 @@ export class ProjectsPage implements OnInit {
       return;
     }
 
+    const { pages, pageLinks, moduleLinks } = createDefaultPagesAndLinks();
     const project: Project = {
-      id: this.createId(),
+      id: createGuid(),
       name,
       createdAt: new Date().toISOString(),
+      pages,
+      pageLinks,
+      moduleLinks,
     };
 
     this.projects = [...this.projects, project];
@@ -88,13 +89,5 @@ export class ProjectsPage implements OnInit {
 
   private saveProjects(): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.projects));
-  }
-
-  private createId(): string {
-    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-      return crypto.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 }
